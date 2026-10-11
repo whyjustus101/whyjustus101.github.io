@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#071f2c">
+    <meta name="description" content="{{DESCRIPTION}}">
+    <meta name="author" content="whyjustus101">
+    <meta property="og:title" content="{{TITLE}} · whyjustus101">
+    <meta property="og:description" content="{{DESCRIPTION}}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{CANONICAL}}">
+    <meta property="og:image" content="https://whyjustus101.github.io/assets/ocean-surface.webp">
+    <link rel="canonical" href="{{CANONICAL}}">
+    <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/notes.css">
+    <title>{{TITLE}} · whyjustus101</title>
+  </head>
+  <body class="notes-page">
+    <a class="skip-link" href="#note-list">跳至笔记列表</a>
+    <div class="notes-backdrop" aria-hidden="true"></div>
+    <header class="site-header is-scrolled">
+      <a class="wordmark" href="/" aria-label="whyjustus101，返回首页">
+        <svg viewBox="0 0 36 26" fill="none" aria-hidden="true"><path d="M2 10c5-8 11-8 16 0s11 8 16 0M2 18c5-8 11-8 16 0s11 8 16 0" stroke="currentColor" stroke-width="2"></path></svg>
+        <span>whyjustus101<span class="wordmark-dot">.</span></span>
+      </a>
+      <nav class="main-nav" aria-label="主导航">
+        <a href="/#work">作品<span>Work</span></a>
+        <a href="/notes/" class="is-active" aria-current="page">笔记<span>Notes</span></a>
+      </nav>
+      <a class="header-github" href="https://github.com/whyjustus101" target="_blank" rel="noopener noreferrer">GitHub <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.6"></path></svg></a>
+    </header>
+
+    <main class="notes-shell" id="notes-top">
+      <header class="notes-intro">
+        <nav class="notes-breadcrumb" aria-label="当前位置"><a href="/">首页</a><span aria-hidden="true">/</span><span aria-current="page">笔记</span></nav>
+        <p class="section-eyebrow">FIELD NOTES</p>
+        <h1>沿途，<span>留下的笔记。</span></h1>
+        <p class="notes-lead">记录代码里的发现，也留下一些还在探索的问题。</p>
+      </header>
+
+      <section class="notes-library" aria-labelledby="library-title">
+        <div class="notes-library-bar">
+          <div class="notes-library-label"><h2 id="library-title">全部笔记</h2><span class="notes-result-count" role="status" aria-live="polite">共 {{NOTE_COUNT}} 篇</span></div>
+          <form class="notes-search" role="search" hidden>
+            <label class="visually-hidden" for="note-search">搜索笔记标题、简介或标签</label>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5"></path></svg>
+            <input id="note-search" type="search" name="q" placeholder="搜索标题、简介或标签" autocomplete="off">
+            <button class="clear-search" type="button" aria-label="清空搜索" hidden>×</button>
+          </form>
+        </div>
+        <div class="note-list" id="note-list" tabindex="-1">{{NOTE_LIST}}</div>
+        <div class="notes-empty" hidden><p>还没有匹配的笔记。</p><span>换个关键词，继续探索。</span></div>
+      </section>
+
+      <footer class="notes-footer">
+        <p>STAY CURIOUS<span>.</span></p>
+        <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">回到海面 <span aria-hidden="true">↗</span></a></div>
+      </footer>
+    </main>
+    <script type="module" src="/notes.js"></script>
+  </body>
+</html>

@@ -4,7 +4,7 @@
 
 一个从海面开始的个人作品站：全屏动态海洋、滚动过渡、开源项目与学习笔记。
 
-新版使用原生 HTML、CSS 和 JavaScript。没有运行时框架、npm 依赖、Ruby、Jekyll 或 Docker；页面资源和字体均自托管。
+新版使用原生 HTML、CSS 和 JavaScript，没有浏览器运行时框架、Ruby、Jekyll 或 Docker。笔记在构建时从 Markdown 生成完整 HTML；解析器随仓库附带，无需 `npm install`。页面资源和字体均自托管。
 
 ## 改哪里
 
@@ -15,7 +15,9 @@
 | `site/main.js` | 滚动、导航、动效开关 |
 | `site/ocean.js` | 独立的 WebGL 海面动效 |
 | `site/assets/` | 图片、字体和图标 |
-| `content/notes/` | 个人笔记原文 |
+| `content/notes/` | Markdown 笔记原文与列表元数据 |
+| `site/notes.css`、`site/notes.js` | 笔记列表、搜索、目录、阅读进度与代码复制 |
+| `scripts/templates/` | 笔记列表和文章阅读页模板 |
 
 动效会跟随系统的“减少动态效果”设置，也可以手动暂停。浏览器不支持 WebGL 时自动显示海洋壁纸。
 
@@ -24,14 +26,21 @@
 在仓库目录运行：
 
 ```sh
-python3 -m http.server 4173 --directory site
+node scripts/build-site.mjs
+python3 -m http.server 4173 --directory dist
 ```
 
-打开 `http://localhost:4173`。修改源文件后刷新即可。
+打开 `http://localhost:4173`，笔记列表位于 `/notes/`。修改源文件后重新构建并刷新。
+
+## 添加笔记
+
+1. 在 `content/notes/` 新建 `文章标识.md`，使用 Markdown 编写标题、段落、代码块等内容。
+2. 在同目录的 `index.json` 添加 `slug`、`title`、`date`、`description` 和 `tags`。`slug` 与 Markdown 文件名相同，只用小写字母、数字和连字符；日期格式为 `YYYY-MM-DD`。
+3. 运行构建命令，笔记列表和 `/notes/文章标识/` 阅读页会自动生成。按下一节发布。
 
 ## 构建与发布
 
-构建脚本仅使用 Node.js 内置模块，无需 `npm install`：
+使用 Node.js 22 或更新版本构建，无需 `npm install`：
 
 ```sh
 node scripts/build-site.mjs

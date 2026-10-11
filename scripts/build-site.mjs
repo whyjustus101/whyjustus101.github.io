@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { renderNotes } from './render-notes.mjs';
 
 const repo = await realpath(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
 const markerName = '.site-build-output';
@@ -40,7 +41,7 @@ async function requireFile(path) {
 async function build() {
   const args = process.argv.slice(2);
   if (args.length === 1 && args[0] === '--help') {
-    console.log('Usage: node scripts/build-site.mjs [--legacy <published-snapshot>] [--out <directory>]\nDefault: build only site/ into <repository>/dist');
+    console.log('Usage: node scripts/build-site.mjs [--legacy <published-snapshot>] [--out <directory>]\nDefault: build site/ and content/notes/ into <repository>/dist');
     return;
   }
   const options = {};
@@ -93,8 +94,9 @@ async function build() {
   });
   if (legacy) await cp(legacy, out, copyOptions(false));
   await cp(site, out, copyOptions(true));
+  const notes = await renderNotes(out, repo);
   await writeFile(join(out, '.nojekyll'), '');
-  console.log(`Built ${out}\nSource: site/${legacy ? `\nPreserved archive: ${legacy}` : ''}`);
+  console.log(`Built ${out}\nSource: site/ and ${notes.count} note(s)${legacy ? `\nPreserved archive: ${legacy}` : ''}`);
 }
 
 build().catch(error => {
