@@ -34,29 +34,25 @@
 
     <main class="notes-shell" id="notes-top">
       <header class="notes-intro">
-        <nav class="notes-breadcrumb" aria-label="当前位置"><a href="/">首页</a><span aria-hidden="true">/</span><span aria-current="page">笔记</span></nav>
-        <p class="section-eyebrow">FIELD NOTES</p>
-        <h1>沿途，<span>留下的笔记。</span></h1>
-        <p class="notes-lead">记录代码里的发现，也留下一些还在探索的问题。</p>
+        <h1>笔记</h1>
       </header>
 
       <section class="notes-library" aria-labelledby="library-title">
         <div class="notes-library-bar">
-          <div class="notes-library-label"><h2 id="library-title">全部笔记</h2><span class="notes-result-count" role="status" aria-live="polite">共 {{NOTE_COUNT}} 篇</span></div>
+          <div class="notes-library-label"><h2 id="library-title" class="visually-hidden">全部笔记</h2><span class="notes-result-count" role="status" aria-live="polite">共 {{NOTE_COUNT}} 篇</span></div>
           <form class="notes-search" role="search" hidden>
             <label class="visually-hidden" for="note-search">搜索笔记标题、简介或标签</label>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5"></path></svg>
-            <input id="note-search" type="search" name="q" placeholder="搜索标题、简介或标签" autocomplete="off">
+            <input id="note-search" type="search" name="q" placeholder="搜索笔记" autocomplete="off">
             <button class="clear-search" type="button" aria-label="清空搜索" hidden>×</button>
           </form>
         </div>
         <div class="note-list" id="note-list" tabindex="-1">{{NOTE_LIST}}</div>
-        <div class="notes-empty" hidden><p>还没有匹配的笔记。</p><span>换个关键词，继续探索。</span></div>
+        <div class="notes-empty" hidden><p>没有找到匹配的笔记。</p></div>
       </section>
 
       <footer class="notes-footer">
-        <p>STAY CURIOUS<span>.</span></p>
-        <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">回到海面 <span aria-hidden="true">↗</span></a></div>
+        <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">返回首页</a></div>
       </footer>
     </main>
     <script type="module" src="/notes.js"></script>

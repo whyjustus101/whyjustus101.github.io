@@ -37,10 +37,9 @@
     <main id="note-top">
       <header class="reading-heading notes-shell">
         <a class="back-to-notes" href="/notes/"><span aria-hidden="true">←</span> 全部笔记</a>
-        <div class="reading-tags">{{TAGS}}</div>
         <h1>{{TITLE}}</h1>
         <p class="reading-description">{{DESCRIPTION}}</p>
-        <div class="reading-meta"><span>whyjustus101</span><span aria-hidden="true">·</span><time datetime="{{DATE}}">{{DATE_LABEL}}</time><span aria-hidden="true">·</span><span>学习笔记</span></div>
+        <div class="reading-meta"><time datetime="{{DATE}}">{{DATE_LABEL}}</time><div class="reading-tags">{{TAGS}}</div></div>
       </header>
 
       <div class="reading-surface">
@@ -59,8 +58,7 @@
       </div>
 
       <footer class="notes-footer notes-shell">
-        <p>KEEP EXPLORING<span>.</span></p>
-        <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/notes/">更多笔记 <span aria-hidden="true">→</span></a></div>
+        <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">返回首页</a></div>
       </footer>
     </main>
     <script type="module" src="/notes.js"></script>
