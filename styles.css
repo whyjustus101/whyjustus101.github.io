@@ -159,6 +159,7 @@ h1 { font: 400 clamp(140px, 18.2vw, 310px)/.82 var(--display-font); letter-spaci
 .note-action { display: flex; align-items: center; gap: 30px; font-size: 11px; color: #bcd2dc; }
 .note-action>span { font-size: 25px; transition: transform .25s; }
 .note-row:hover .note-action>span { transform: translate(4px, -4px); }
+.all-notes { margin-top: 27px; }
 
 .site-footer { padding-bottom: 30px; }
 .footer-top { display: flex; justify-content: space-between; gap: 30px; align-items: center; }
