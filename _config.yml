@@ -2,10 +2,10 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: 归舟 # the website title (if blank, full name will be used instead)
-first_name: wang
-middle_name: R.
-last_name: bochen
+title: whyjustus101 # the website title (if blank, full name will be used instead)
+first_name: whyjustus101
+middle_name:
+last_name:
 email: winiymissl@163.com
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   四大数据打卡
