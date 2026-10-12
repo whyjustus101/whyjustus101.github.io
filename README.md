@@ -2,7 +2,7 @@
 
 [打开网站 →](https://whyjustus101.github.io/)
 
-一个从海面开始的个人作品站：全屏动态海洋、滚动过渡、开源项目与学习笔记。
+一个从海面开始的个人作品站：全屏动态海洋、跟随鼠标的粒子环、滚动过渡、开源项目与学习笔记。
 
 新版使用原生 HTML、CSS 和 JavaScript，没有浏览器运行时框架、Ruby、Jekyll 或 Docker。笔记在构建时从 Markdown 生成完整 HTML；解析器随仓库附带，无需 `npm install`。页面资源和字体均自托管。
 
@@ -14,12 +14,13 @@
 | `site/styles.css` | 排版、颜色、手机适配 |
 | `site/main.js` | 滚动、导航、动效开关 |
 | `site/ocean.js` | 独立的 WebGL 海面动效 |
+| `site/particles.js` | 独立的 Canvas 鼠标粒子动效 |
 | `site/assets/` | 图片、字体和图标 |
 | `content/notes/` | Markdown 笔记原文与列表元数据 |
 | `site/notes.css`、`site/notes.js` | 笔记列表、搜索、目录、阅读进度与代码复制 |
 | `scripts/templates/` | 笔记列表和文章阅读页模板 |
 
-动效会跟随系统的“减少动态效果”设置，也可以手动暂停。浏览器不支持 WebGL 时自动显示海洋壁纸。
+鼠标移过海面时，粒子环会带着惯性跟随，经过的粒子逐渐回归。触屏和“减少动态效果”模式使用静态点阵；暂停开关同时控制海面与粒子。浏览器不支持 WebGL 时自动显示海洋壁纸。
 
 ## 本地预览
 

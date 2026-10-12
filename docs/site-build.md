@@ -8,7 +8,7 @@ node scripts/build-site.mjs
 
 This copies `site/` into `dist` and renders the notes list and article pages as static HTML. Open the output through a local static server to preview. `--out <directory>` selects another output directory; relative paths are resolved from the current working directory.
 
-The build requires `site/index.html`, `styles.css`, `main.js`, `ocean.js`, and `assets/`, as well as the notes metadata, Markdown sources, and templates described below. It excludes `.git`, input build markers, and `ASSETS.md`, and writes `.nojekyll`. Check asset references and visual behavior when changing the site.
+The build requires `site/index.html`, `styles.css`, `main.js`, `ocean.js`, `particles.js`, and `assets/`, as well as the notes metadata, Markdown sources, and templates described below. It excludes `.git`, input build markers, and `ASSETS.md`, and writes `.nojekyll`. Check asset references and visual behavior when changing the site.
 
 ## Write and browse notes
 
