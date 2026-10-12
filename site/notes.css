@@ -2,6 +2,7 @@
   --notes-appbar-height: 80px;
   color: var(--md-sys-color-on-surface);
 }
+.notes-page::before { content: ""; position: fixed; z-index: 0; inset: 0; pointer-events: none; background: linear-gradient(#031722df, #031722ed), url("/assets/ocean-surface.webp") center/cover; }
 
 .notes-page [hidden] { display: none !important; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -22,10 +23,10 @@
   width: 360px;
   height: 56px;
   padding: 4px 4px 4px 20px;
-  border: 1px solid transparent;
-  border-radius: var(--md-sys-shape-corner-full);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 4px;
   color: var(--md-sys-color-on-surface-variant);
-  background: var(--md-sys-color-surface-container-high);
+  background: #0a2a3a66;
   transition: background var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard), box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
 }
 .notes-search:focus-within { background: var(--md-sys-color-surface-container-lowest); box-shadow: 0 0 0 2px var(--md-sys-color-primary); }
@@ -36,7 +37,7 @@
 .clear-search { display: inline-flex; flex: 0 0 48px; align-items: center; justify-content: center; width: 48px; height: 48px; padding: 12px; border: 0; border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-surface-variant); background: transparent; cursor: pointer; }
 .clear-search svg { width: 24px; height: 24px; }
 .clear-search:hover { background: var(--md-sys-color-surface-container-highest); }
-.note-list { overflow: clip; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-extra-large); background: var(--md-sys-color-surface-container-lowest); }
+.note-list { border-top: 1px solid var(--md-sys-color-outline-variant); border-bottom: 1px solid var(--md-sys-color-outline-variant); background: #08233147; }
 .note-list:not(:has(.note-list-item:not([hidden]))) { display: none; }
 .note-list-item {
   display: grid;
@@ -53,13 +54,13 @@
 .note-list-item:hover { background: var(--md-sys-color-surface-container-low); }
 .note-list-item:active { background: var(--md-sys-color-surface-container); }
 .note-list-item:focus-visible { outline-offset: -4px; }
-.note-list-date { align-self: start; justify-self: start; padding: 6px 10px; border-radius: var(--md-sys-shape-corner-small); background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface-variant); font-size: 12px; line-height: 20px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.note-list-date { align-self: start; justify-self: start; padding: 6px 0; color: var(--md-sys-color-on-surface-variant); font-size: 12px; line-height: 20px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .note-list-tags, .reading-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-.note-list-tags>span, .reading-tags>span { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border-radius: var(--md-sys-shape-corner-small); background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); font-size: 12px; line-height: 20px; }
+.note-list-tags>span, .reading-tags>span { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border: 1px solid var(--md-sys-color-outline-variant); border-radius: 3px; color: var(--md-sys-color-primary); font-size: 12px; line-height: 20px; }
 .note-list-content { min-width: 0; }
 .note-list-content h2 { margin: 12px 0 8px; font-size: 24px; line-height: 1.45; font-weight: 500; letter-spacing: -.025em; overflow-wrap: anywhere; }
 .note-list-content p { max-width: 65ch; margin: 0; color: var(--md-sys-color-on-surface-variant); font-size: 16px; line-height: 1.8; }
-.note-list-arrow { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-primary-container); background: var(--md-sys-color-primary-container); font-size: 24px; line-height: 1; transition: background var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard), color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard); }
+.note-list-arrow { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid var(--md-sys-color-outline-variant); border-radius: 50%; color: var(--md-sys-color-primary); font-size: 24px; line-height: 1; transition: background var(--md-sys-motion-duration-short), color var(--md-sys-motion-duration-short); }
 .note-list-item:hover .note-list-arrow { color: var(--md-sys-color-on-primary); background: var(--md-sys-color-primary); }
 .notes-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 240px; padding: 40px 24px; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-extra-large); background: var(--md-sys-color-surface-container-lowest); text-align: center; }
 .notes-empty>svg { width: 48px; height: 48px; padding: 12px; box-sizing: content-box; border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-secondary-container); background: var(--md-sys-color-secondary-container); }
@@ -70,14 +71,14 @@
 .notes-footer a:hover { background: var(--md-sys-color-secondary-container); }
 
 .reading-heading { padding-top: 36px; padding-bottom: 48px; }
-.back-to-notes { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding-inline: 18px; margin-bottom: 24px; border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-primary); font-size: 14px; line-height: 1.5; font-weight: 500; text-decoration: none; transition: background var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard); }
+.back-to-notes { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding-inline: 0; margin-bottom: 24px; color: var(--md-sys-color-primary); font-size: 14px; line-height: 1.5; font-weight: 500; text-decoration: none; transition: color var(--md-sys-motion-duration-short); }
 .back-to-notes>span { font-size: 22px; line-height: 1; }
-.back-to-notes:hover { background: var(--md-sys-color-secondary-container); }
+.back-to-notes:hover { color: var(--md-sys-color-on-surface); }
 .reading-page h1 { max-width: 32ch; font-size: clamp(32px, 3.8vw, 46px); line-height: 1.35; text-wrap: balance; overflow-wrap: anywhere; }
 .reading-description { max-width: 68ch; margin: 20px 0 0; color: var(--md-sys-color-on-surface-variant); font-size: 18px; line-height: 1.8; }
 .reading-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; color: var(--md-sys-color-on-surface-variant); font-size: 13px; line-height: 1.5; }
 .reading-meta>time { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 10px; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-small); font-variant-numeric: tabular-nums; }
-.reading-surface { background: var(--md-sys-color-surface-container-lowest); border-top: 1px solid var(--md-sys-color-outline-variant); }
+.reading-surface { background: #02141f5c; border-top: 1px solid var(--md-sys-color-outline-variant); }
 .reading-layout { display: grid; grid-template-columns: minmax(0, 75ch) 256px; gap: clamp(40px, 5vw, 72px); justify-content: space-between; align-items: start; padding-top: 56px; padding-bottom: 64px; font-size: 18px; }
 .reading-sidebar { grid-column: 2; grid-row: 1; min-width: 0; position: sticky; top: calc(var(--notes-appbar-height) + 24px); }
 .reading-toc { overflow: clip; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-large); background: var(--md-sys-color-surface-container-low); }
@@ -203,4 +204,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .notes-page *, .notes-page *::before, .notes-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+@media (forced-colors: active) {
+  .notes-page::before { display: none; }
 }

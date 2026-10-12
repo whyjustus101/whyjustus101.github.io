@@ -10,7 +10,9 @@ This copies `site/` into `dist` and renders the notes list and article pages as 
 
 The build requires `site/index.html`, `material.css`, `styles.css`, `main.js`, `ocean.js`, `particles.js`, and `assets/`, as well as the notes metadata, Markdown sources, and templates described below. It excludes `.git`, input build markers, and `ASSETS.md`, and writes `.nojekyll`. Check asset references and visual behavior when changing the site.
 
-`material.css` contains the shared Material Design 3 theme, font declarations, base styles, and top app bar. The homepage adds `styles.css`; generated notes pages add `notes.css` without loading homepage styles. The static color roles use Material Color Utilities 0.3.0, `SchemeTonalSpot(Hct.fromInt(argbFromHex('#006874')), false, 0)`. The generator was used only during design; neither it nor a UI framework is a build or runtime dependency.
+`material.css` contains the shared dark ocean palette, font declarations, base styles, and navigation. The homepage adds `styles.css`; generated notes pages add `notes.css` without loading homepage styles. The historical filename is retained, but the active design uses translucent deep-water surfaces. No UI framework is a build or runtime dependency.
+
+The homepage loads `waterline-ocean.webp` or its mobile crop as both a first-paint poster and WebGL texture. `sourceWaterline` is a three-point photographic calibration `[left, center, right]`, measured from the image's top edge. The shader follows the native meniscus rather than drawing a second waterline. Manual pause and system reduced motion stop continuous rendering; scrolling interpolates a descent into the lower half of the photograph. Original top-down ocean assets remain available for the notes background.
 
 ## Write and browse notes
 

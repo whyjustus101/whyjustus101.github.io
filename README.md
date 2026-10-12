@@ -2,7 +2,7 @@
 
 [打开网站 →](https://whyjustus101.github.io/)
 
-一个从海面开始的个人作品站：全屏动态海洋、跟随鼠标的粒子环，以及 Material Design 3 风格的作品展示与笔记阅读。
+一个从海面开始的个人作品站：半在海上、半在海下的全屏场景，起伏的水线、跟随鼠标的粒子，以及深海背景中的作品与笔记。
 
 新版使用原生 HTML、CSS 和 JavaScript，没有浏览器运行时框架、Ruby、Jekyll 或 Docker。笔记在构建时从 Markdown 生成完整 HTML；解析器随仓库附带，无需 `npm install`。页面资源和字体均自托管。
 
@@ -11,10 +11,10 @@
 | 文件 | 用途 |
 | --- | --- |
 | `site/index.html` | 文案、导航、项目和笔记链接 |
-| `site/material.css` | 全站 Material 3 色彩、字体、圆角、导航与交互状态 |
+| `site/material.css` | 全站海洋配色、字体、导航与交互状态 |
 | `site/styles.css` | 首页布局、项目卡片、海洋开屏与手机适配 |
 | `site/main.js` | 滚动、导航、动效开关 |
-| `site/ocean.js` | 独立的 WebGL 海面动效 |
+| `site/ocean.js` | 独立的 WebGL 水线起伏、折射与下潜过渡 |
 | `site/particles.js` | 独立的 Canvas 鼠标粒子动效 |
 | `site/assets/` | 图片、字体和图标 |
 | `content/notes/` | Markdown 笔记原文与列表元数据 |
@@ -23,7 +23,7 @@
 
 鼠标移过海面时，粒子环会带着惯性跟随，经过的粒子逐渐回归。触屏和“减少动态效果”模式使用静态点阵；暂停开关同时控制海面与粒子。浏览器不支持 WebGL 时自动显示海洋壁纸。
 
-Material 3 主题以海洋青 `#006874` 生成 Tonal Spot 色板，首页内容区、笔记列表和文章共用语义色彩与圆角层级。正文和界面使用自托管 Roboto，中文跟随系统字体；Bebas Neue 保留用于海洋开屏。颜色已写入 CSS，不需要运行时组件库或联网字体服务。
+首页使用 NOAA 公共领域的海面上下实景照片，波浪沿照片原有水线起伏；向下滚动时视角逐渐下潜。项目区、笔记列表和文章延续深蓝背景。界面使用自托管 Manrope，中文跟随系统字体；Bebas Neue 用于开屏标题。所有效果使用原生 CSS、Canvas 和 WebGL，不需要运行时组件库或联网字体服务。
 
 ## 本地预览
 

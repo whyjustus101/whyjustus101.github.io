@@ -16,6 +16,21 @@ Retrieved and verified on 2026-10-11. All production images and fonts are served
 - Edits: resizing, portrait crop for the mobile variant, WebP compression; no generated elements or retouching.
 - Suggested credit: “Ocean photograph by Jeremy Bishop, via Wikimedia Commons (CC0).”
 
+## Half-submerged ocean photograph
+
+Added on 2026-10-12.
+
+- Work: **Nenue lurking below**.
+- Creator: **John Burns / NOAA**, from the NOAA Office of National Marine Sanctuaries collection; photographed in Papahānaumokuākea Marine National Monument.
+- Source and license record: [Wikimedia Commons — Nenue lurking below (40176628190).jpg](https://commons.wikimedia.org/wiki/File:Nenue_lurking_below_(40176628190).jpg).
+- Original publication: [NOAA Office of National Marine Sanctuaries on Flickr](https://www.flickr.com/photos/onms/40176628190/).
+- License: **Public domain**, recorded by Wikimedia Commons as **PD-US-NOAA** (United States government work).
+- Original size: 2640 × 3960.
+- `assets/waterline-ocean.webp`: 2400 × 1500. Crop from original `(0, 2050)` to `(2640, 3700)`.
+- `assets/waterline-ocean-mobile.webp`: 1080 × 1620. Crop from original `(607, 1820)` to `(2033, 3960)`.
+- Edits: cropping, resizing, a dark blue color grade, and WebP compression. Runtime refraction and surface motion are original WebGL effects. No generated imagery or added subjects.
+- Credit: “Ocean photograph by John Burns / NOAA (public domain).”
+
 ## Fonts
 
 All fonts are redistributed under the **SIL Open Font License 1.1**. The original license files and copyright notices are included alongside the fonts. Bebas Neue and Manrope were converted from Google Fonts' official source TTF files to WOFF2 with fontTools/Brotli; glyphs, family names, and font designs were preserved.

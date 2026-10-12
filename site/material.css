@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "Roboto";
-  src: url("/assets/roboto-latin.woff2") format("woff2");
+  font-family: "Manrope";
+  src: url("/assets/manrope-latin.woff2") format("woff2");
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 800;
   font-display: swap;
 }
 @font-face {
@@ -13,52 +13,51 @@
   font-display: swap;
 }
 
-/* Material 3 Tonal Spot, ocean seed #006874, light scheme, standard contrast.
-   Generated with Google's Material Color Utilities; no runtime dependency. */
+/* Shared ocean palette. The hero and reader use the same deep-water surfaces. */
 :root {
-  color-scheme: light;
-  --md-sys-color-primary: #006874;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #9eeffe;
-  --md-sys-color-on-primary-container: #004f58;
-  --md-sys-color-secondary: #4a6267;
-  --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #cde7ec;
-  --md-sys-color-on-secondary-container: #334b4f;
-  --md-sys-color-tertiary: #535e7d;
-  --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #dae2ff;
-  --md-sys-color-on-tertiary-container: #3b4665;
-  --md-sys-color-surface: #f5fafb;
-  --md-sys-color-surface-dim: #d5dbdc;
-  --md-sys-color-surface-bright: #f5fafb;
-  --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #eff5f6;
-  --md-sys-color-surface-container: #e9eff0;
-  --md-sys-color-surface-container-high: #e3e9ea;
-  --md-sys-color-surface-container-highest: #dee3e5;
-  --md-sys-color-on-surface: #171d1e;
-  --md-sys-color-on-surface-variant: #3f484a;
-  --md-sys-color-outline: #6f797b;
-  --md-sys-color-outline-variant: #bfc8ca;
-  --md-sys-color-inverse-surface: #2b3133;
-  --md-sys-color-inverse-on-surface: #ecf2f3;
-  --md-sys-color-inverse-primary: #82d3e1;
-  --md-sys-color-error: #ba1a1a;
-  --md-sys-color-on-error: #ffffff;
-  --md-sys-color-error-container: #ffdad6;
-  --md-sys-color-on-error-container: #93000a;
-  --md-sys-shape-corner-small: 8px;
-  --md-sys-shape-corner-medium: 12px;
-  --md-sys-shape-corner-large: 16px;
-  --md-sys-shape-corner-extra-large: 28px;
+  color-scheme: dark;
+  --md-sys-color-primary: #9de2eb;
+  --md-sys-color-on-primary: #062930;
+  --md-sys-color-primary-container: #103d49;
+  --md-sys-color-on-primary-container: #cbf3f7;
+  --md-sys-color-secondary: #b5ced6;
+  --md-sys-color-on-secondary: #092936;
+  --md-sys-color-secondary-container: #153644;
+  --md-sys-color-on-secondary-container: #c9e1e9;
+  --md-sys-color-tertiary: #b7c8e7;
+  --md-sys-color-on-tertiary: #192c48;
+  --md-sys-color-tertiary-container: #1d3653;
+  --md-sys-color-on-tertiary-container: #d3e4ff;
+  --md-sys-color-surface: #041925;
+  --md-sys-color-surface-dim: #02111c;
+  --md-sys-color-surface-bright: #153a4b;
+  --md-sys-color-surface-container-lowest: #041823d9;
+  --md-sys-color-surface-container-low: #082331cc;
+  --md-sys-color-surface-container: #0b2c3ad9;
+  --md-sys-color-surface-container-high: #113545;
+  --md-sys-color-surface-container-highest: #1b4353;
+  --md-sys-color-on-surface: #eaf4f6;
+  --md-sys-color-on-surface-variant: #acbec7;
+  --md-sys-color-outline: #6a919f;
+  --md-sys-color-outline-variant: #93c9d938;
+  --md-sys-color-inverse-surface: #03131e;
+  --md-sys-color-inverse-on-surface: #e6f2f5;
+  --md-sys-color-inverse-primary: #96dcea;
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+  --md-sys-shape-corner-small: 4px;
+  --md-sys-shape-corner-medium: 6px;
+  --md-sys-shape-corner-large: 10px;
+  --md-sys-shape-corner-extra-large: 12px;
   --md-sys-shape-corner-full: 999px;
-  --md-sys-elevation-1: 0 1px 2px #171d1e24, 0 1px 3px 1px #171d1e12;
-  --md-sys-elevation-2: 0 1px 2px #171d1e24, 0 2px 6px 2px #171d1e12;
+  --md-sys-elevation-1: 0 8px 32px #010b1640;
+  --md-sys-elevation-2: 0 12px 48px #010b1670;
   --md-sys-motion-easing-standard: cubic-bezier(.2, 0, 0, 1);
   --md-sys-motion-duration-short: 200ms;
   --md-sys-motion-duration-medium: 350ms;
-  --font-body: "Roboto", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-display: "Bebas Neue", "Impact", sans-serif;
   --gutter: clamp(24px, 4.6vw, 88px);
 }
@@ -81,7 +80,7 @@ main { position: relative; z-index: 1; }
 .skip-link { position: fixed; z-index: 100; top: 12px; left: 12px; display: flex; align-items: center; min-height: 48px; padding: 12px 24px; border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-primary); background: var(--md-sys-color-primary); box-shadow: var(--md-sys-elevation-2); transform: translateY(-180%); }
 .skip-link:focus { transform: translateY(0); }
 
-/* One top app bar across the homepage, library, and reader. */
+/* Quiet navigation floats above the sea and the reading surfaces. */
 .site-header {
   --bar-ink: var(--md-sys-color-on-surface);
   --bar-accent: var(--md-sys-color-primary);
@@ -95,30 +94,30 @@ main { position: relative; z-index: 1; }
   gap: 24px;
   height: 80px;
   padding: 0 var(--gutter);
-  background: var(--md-sys-color-surface);
+  background: #041925a6;
   color: var(--bar-ink);
   transition: background var(--md-sys-motion-duration-medium), color var(--md-sys-motion-duration-short), box-shadow var(--md-sys-motion-duration-short);
 }
-.site-header.is-scrolled { background: var(--md-sys-color-surface-container-low); box-shadow: 0 1px 0 var(--md-sys-color-outline-variant); }
+.site-header.is-scrolled { background: #041925c9; box-shadow: 0 1px 0 #9ed8e21f; backdrop-filter: blur(18px); }
 .home-page .site-header:not(.is-scrolled) {
   --bar-ink: #ecf2f3;
   --bar-accent: var(--md-sys-color-inverse-primary);
-  --bar-container: #254e59;
+  --bar-container: transparent;
   --bar-on-container: #d3f4fa;
-  background: #08233340;
+  background: linear-gradient(#02142070, transparent);
 }
 .site-header :focus-visible { outline-color: var(--bar-accent); }
 .wordmark { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; border-radius: var(--md-sys-shape-corner-medium); font-size: 21px; font-weight: 600; line-height: 1.3; letter-spacing: -.6px; white-space: nowrap; }
-.wordmark svg { box-sizing: content-box; width: 30px; height: 24px; padding: 10px 7px; border-radius: var(--md-sys-shape-corner-large); background: var(--bar-container); color: var(--bar-on-container); }
+.wordmark svg { box-sizing: content-box; width: 30px; height: 24px; padding: 10px 7px; color: var(--bar-accent); }
 .wordmark-dot { color: var(--bar-accent); }
 .main-nav { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.main-nav a { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 24px; border-radius: var(--md-sys-shape-corner-full); font-size: 14px; font-weight: 500; line-height: 1.45; transition: background var(--md-sys-motion-duration-short); }
+.main-nav a { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 24px; border-radius: 4px; font-size: 13px; font-weight: 500; line-height: 1.45; transition: color var(--md-sys-motion-duration-short); }
 .main-nav a span { font-size: 12px; font-weight: 400; }
 .main-nav a:hover { background: color-mix(in srgb, var(--bar-ink) 8%, transparent); }
 .main-nav a:active { background: color-mix(in srgb, var(--bar-ink) 12%, transparent); }
-.main-nav a.is-active { background: var(--bar-container); color: var(--bar-on-container); }
-.main-nav a.is-active:hover { background: color-mix(in srgb, var(--bar-container), var(--bar-on-container) 8%); }
-.header-github { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 10px 20px; border: 1px solid color-mix(in srgb, var(--bar-ink) 46%, transparent); border-radius: var(--md-sys-shape-corner-full); font-size: 14px; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: background var(--md-sys-motion-duration-short); }
+.main-nav a.is-active { color: var(--bar-accent); }
+.main-nav a.is-active::after { content: ""; position: absolute; bottom: 5px; left: 24px; right: 24px; height: 1px; background: var(--bar-accent); }
+.header-github { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 10px 20px; border: 1px solid #93c9d947; border-radius: 4px; font-size: 13px; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: background var(--md-sys-motion-duration-short); }
 .header-github svg { width: 18px; height: 18px; }
 .header-github:hover { background: color-mix(in srgb, var(--bar-ink) 8%, transparent); }
 .header-github:active { background: color-mix(in srgb, var(--bar-ink) 12%, transparent); }
@@ -136,6 +135,7 @@ main { position: relative; z-index: 1; }
   .wordmark svg { width: 25px; height: 22px; padding: 8px 5px; border-radius: var(--md-sys-shape-corner-medium); }
   .main-nav { gap: 2px; }
   .main-nav a { min-width: 48px; padding: 12px 10px; font-size: 13px; }
+  .main-nav a.is-active::after { left: 10px; right: 10px; }
   .header-github { width: 48px; padding: 0; border-color: transparent; font-size: 0; gap: 0; }
   .header-github svg { width: 21px; height: 21px; }
 }
