@@ -18,11 +18,14 @@ Retrieved and verified on 2026-10-11. All production images and fonts are served
 
 ## Fonts
 
-Both fonts are redistributed under the **SIL Open Font License 1.1**. The original license files and copyright notices are included alongside the fonts. Google Fonts' official source TTF files were converted to WOFF2 with fontTools/Brotli; glyphs, family names, and font designs were preserved.
+All fonts are redistributed under the **SIL Open Font License 1.1**. The original license files and copyright notices are included alongside the fonts. Bebas Neue and Manrope were converted from Google Fonts' official source TTF files to WOFF2 with fontTools/Brotli; glyphs, family names, and font designs were preserved.
 
 | Local asset | Family / weight | Official source | License copy |
 |---|---|---|---|
 | `assets/bebas-neue.woff2` | Bebas Neue / 400 | [google/fonts — ofl/bebasneue](https://github.com/google/fonts/tree/main/ofl/bebasneue) | `assets/bebas-neue-OFL.txt` |
 | `assets/manrope-latin.woff2` | Manrope / variable 200–800 | [google/fonts — ofl/manrope](https://github.com/google/fonts/tree/main/ofl/manrope) | `assets/manrope-OFL.txt` |
+| `assets/roboto-latin.woff2` | Roboto / Latin variable 100–900 | [Fontsource — Roboto](https://fontsource.org/fonts/roboto), sourced from [google/fonts — ofl/roboto](https://github.com/google/fonts/tree/main/ofl/roboto) | `assets/roboto-OFL.txt` |
 
 Bebas Neue copyright: © 2010 Dharma Type. Manrope copyright: © 2018 The Manrope Project Authors. Despite the local `-latin` filename, the Manrope file preserves the complete official source font rather than applying a new subset.
+
+Roboto was added on 2026-10-12 for the Material 3 interface. The Latin normal variable WOFF2 is copied unchanged from `@fontsource-variable/roboto` (`roboto-latin-wght-normal.woff2`, Google Fonts v51), with its license and copyright notice: © 2011 The Roboto Project Authors. Chinese text uses system fonts. Fontsource is only an asset source, not a site dependency.

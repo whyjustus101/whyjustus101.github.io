@@ -8,7 +8,9 @@ node scripts/build-site.mjs
 
 This copies `site/` into `dist` and renders the notes list and article pages as static HTML. Open the output through a local static server to preview. `--out <directory>` selects another output directory; relative paths are resolved from the current working directory.
 
-The build requires `site/index.html`, `styles.css`, `main.js`, `ocean.js`, `particles.js`, and `assets/`, as well as the notes metadata, Markdown sources, and templates described below. It excludes `.git`, input build markers, and `ASSETS.md`, and writes `.nojekyll`. Check asset references and visual behavior when changing the site.
+The build requires `site/index.html`, `material.css`, `styles.css`, `main.js`, `ocean.js`, `particles.js`, and `assets/`, as well as the notes metadata, Markdown sources, and templates described below. It excludes `.git`, input build markers, and `ASSETS.md`, and writes `.nojekyll`. Check asset references and visual behavior when changing the site.
+
+`material.css` contains the shared Material Design 3 theme, font declarations, base styles, and top app bar. The homepage adds `styles.css`; generated notes pages add `notes.css` without loading homepage styles. The static color roles use Material Color Utilities 0.3.0, `SchemeTonalSpot(Hct.fromInt(argbFromHex('#006874')), false, 0)`. The generator was used only during design; neither it nor a UI framework is a build or runtime dependency.
 
 ## Write and browse notes
 

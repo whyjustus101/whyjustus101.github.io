@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#071f2c">
+    <meta name="theme-color" content="#f5fafb">
     <meta name="description" content="{{DESCRIPTION}}">
     <meta name="author" content="whyjustus101">
     <meta property="og:title" content="{{TITLE}} · whyjustus101">
@@ -13,13 +13,13 @@
     <meta property="og:image" content="https://whyjustus101.github.io/assets/ocean-surface.webp">
     <link rel="canonical" href="{{CANONICAL}}">
     <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/notes.css">
+    <link rel="preload" href="/assets/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/material.css?v=20261012-md3">
+    <link rel="stylesheet" href="/notes.css?v=20261012-md3">
     <title>{{TITLE}} · whyjustus101</title>
   </head>
   <body class="notes-page">
     <a class="skip-link" href="#note-list">跳至笔记列表</a>
-    <div class="notes-backdrop" aria-hidden="true"></div>
     <header class="site-header is-scrolled">
       <a class="wordmark" href="/" aria-label="whyjustus101，返回首页">
         <svg viewBox="0 0 36 26" fill="none" aria-hidden="true"><path d="M2 10c5-8 11-8 16 0s11 8 16 0M2 18c5-8 11-8 16 0s11 8 16 0" stroke="currentColor" stroke-width="2"></path></svg>
@@ -39,22 +39,22 @@
 
       <section class="notes-library" aria-labelledby="library-title">
         <div class="notes-library-bar">
-          <div class="notes-library-label"><h2 id="library-title" class="visually-hidden">全部笔记</h2><span class="notes-result-count" role="status" aria-live="polite">共 {{NOTE_COUNT}} 篇</span></div>
+          <div class="notes-library-label"><h2 id="library-title">全部笔记</h2><span class="notes-result-count" role="status" aria-live="polite">共 {{NOTE_COUNT}} 篇</span></div>
           <form class="notes-search" role="search" hidden>
             <label class="visually-hidden" for="note-search">搜索笔记标题、简介或标签</label>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5"></path></svg>
             <input id="note-search" type="search" name="q" placeholder="搜索笔记" autocomplete="off">
-            <button class="clear-search" type="button" aria-label="清空搜索" hidden>×</button>
+            <button class="clear-search" type="button" aria-label="清空搜索" hidden><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button>
           </form>
         </div>
         <div class="note-list" id="note-list" tabindex="-1">{{NOTE_LIST}}</div>
-        <div class="notes-empty" hidden><p>没有找到匹配的笔记。</p></div>
+        <div class="notes-empty" hidden><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg><p>没有找到匹配的笔记。</p></div>
       </section>
 
       <footer class="notes-footer">
         <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">返回首页</a></div>
       </footer>
     </main>
-    <script type="module" src="/notes.js"></script>
+    <script type="module" src="/notes.js?v=20261012-md3"></script>
   </body>
 </html>

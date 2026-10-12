@@ -60,7 +60,7 @@ async function build() {
     if (overlaps(site, legacy) || contains(legacy, repo)) throw new Error('Legacy input must be separate from the site source and must not contain the repository.');
     await requireFile(join(legacy, 'index.html'));
   }
-  await Promise.all(['index.html', 'styles.css', 'main.js', 'ocean.js', 'particles.js'].map(name => requireFile(join(site, name))));
+  await Promise.all(['index.html', 'material.css', 'styles.css', 'main.js', 'ocean.js', 'particles.js'].map(name => requireFile(join(site, name))));
   if (!(await inspect(join(site, 'assets')))?.isDirectory()) throw new Error('Required site/assets directory is missing.');
 
   const requestedOut = resolve(options['--out'] || join(repo, 'dist'));
