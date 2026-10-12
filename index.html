@@ -16,7 +16,7 @@
     <link rel="preload" href="/assets/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/ocean-surface.webp" as="image" media="(min-width: 701px)" fetchpriority="high">
     <link rel="preload" href="/assets/ocean-surface-mobile.webp" as="image" media="(max-width: 700px)" fetchpriority="high">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=20261012-particles">
     <title>whyjustus101 — Beyond the surface</title>
   </head>
   <body>
@@ -30,6 +30,7 @@
       <canvas id="ocean-canvas"></canvas>
       <div class="ocean-shade"></div>
       <div class="ocean-grain"></div>
+      <canvas id="ocean-particles"></canvas>
     </div>
 
     <header class="site-header">
@@ -55,7 +56,7 @@
         <div class="hero-bottom">
           <div class="hero-signature"><span>WHYJUSTUS101</span><span>CODE. CREATE. EXPLORE.</span></div>
           <a class="explore-link" href="#work"><span class="scroll-orbit"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v15m-6-6 6 6 6-6" stroke="currentColor" stroke-width="1.5"></path></svg></span><span>向下探索<span class="explore-en">SCROLL TO EXPLORE</span></span></a>
-          <button class="motion-toggle" type="button" aria-pressed="false" aria-label="暂停海面动态">
+          <button class="motion-toggle" type="button" aria-pressed="false" aria-label="暂停背景动效">
             <svg class="pause-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 5v10M13 5v10" stroke="currentColor" stroke-width="1.6"></path></svg>
             <svg class="play-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7 4 9 6-9 6V4Z" stroke="currentColor" stroke-width="1.4"></path></svg>
             <span class="motion-label">暂停动态</span>
@@ -112,6 +113,6 @@
         </footer>
       </div>
     </main>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/main.js?v=20261012-particles"></script>
   </body>
 </html>

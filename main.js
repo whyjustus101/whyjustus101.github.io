@@ -1,4 +1,5 @@
 import { createOceanScene } from './ocean.js';
+import { createParticleField } from './particles.js?v=20261012';
 
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
@@ -16,6 +17,7 @@ const ocean = createOceanScene(canvas, {
     ? './assets/ocean-surface-mobile.webp' : './assets/ocean-surface.webp', import.meta.url).href,
   onReady: () => root.classList.add('scene-ready'),
 });
+const particles = createParticleField(document.querySelector('#ocean-particles'));
 
 let manuallyPaused = false;
 try { manuallyPaused = localStorage.getItem('ocean-motion') === 'paused'; } catch { /* Storage is optional. */ }
@@ -25,8 +27,9 @@ let scrollFrame = 0;
 function syncMotion() {
   const paused = manuallyPaused || reducedMotion.matches;
   ocean.setPaused(paused || beyondHero);
+  particles.setPaused(paused || beyondHero);
   motionButton.setAttribute('aria-pressed', String(paused));
-  motionButton.setAttribute('aria-label', paused ? '播放海面动态' : '暂停海面动态');
+  motionButton.setAttribute('aria-label', paused ? '播放背景动效' : '暂停背景动效');
   motionLabel.textContent = paused ? '播放动态' : '暂停动态';
   if (reducedMotion.matches) {
     motionLabel.textContent = '已减少动态';
@@ -44,6 +47,7 @@ function renderScroll() {
   const progress = Math.min(1, Math.max(0, y / heroHeight));
   header.classList.toggle('is-scrolled', y > 45);
   ocean.setProgress(progress);
+  particles.setProgress(progress);
   const nowBeyond = y > heroHeight * 1.35;
   if (nowBeyond !== beyondHero) {
     beyondHero = nowBeyond;
@@ -111,7 +115,7 @@ if ('IntersectionObserver' in window) {
 }
 
 document.querySelector('#current-year').textContent = String(new Date().getFullYear());
-window.addEventListener('pagehide', () => ocean.setPaused(true));
+window.addEventListener('pagehide', () => { ocean.setPaused(true); particles.setPaused(true); });
 window.addEventListener('pageshow', syncMotion);
 syncMotion();
 renderScroll();
