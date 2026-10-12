@@ -13,7 +13,7 @@ const compactViewport = window.matchMedia('(max-width: 700px)');
 // Keep phone rotation from switching to a much heavier 4K decoder.
 const connection = navigator.connection;
 const useCompactVideo = window.matchMedia('(pointer: coarse)').matches
-  || connection?.saveData || /^(slow-2g|2g|3g)$/.test(connection?.effectiveType || '');
+  || connection?.saveData === true;
 const videoUrl = new URL(useCompactVideo
   ? './assets/ocean-waves-1080.mp4' : './assets/ocean-waves-4k.mp4', import.meta.url).href;
 root.classList.add('has-js');
