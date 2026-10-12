@@ -16,6 +16,19 @@ Retrieved and verified on 2026-10-11. All production images and fonts are served
 - Edits: resizing, portrait crop for the mobile variant, WebP compression; no generated elements or retouching.
 - Suggested credit: “Ocean photograph by Jeremy Bishop, via Wikimedia Commons (CC0).”
 
+## 4K ocean motion footage
+
+- Work: **Mavericks Beach 3 2024-03-18** by **Fastily**, recorded March 18, 2024.
+- Source: https://commons.wikimedia.org/wiki/File:Mavericks_Beach_3_2024-03-18.webm
+- Creator: https://commons.wikimedia.org/wiki/User_talk:Fastily
+- Original: https://upload.wikimedia.org/wikipedia/commons/c/c1/Mavericks_Beach_3_2024-03-18.webm
+- License: **CC BY-SA 4.0**, https://creativecommons.org/licenses/by-sa/4.0/ . The adapted MP4 files remain licensed CC BY-SA 4.0; visible attribution is linked from the homepage footer to `/credits/`.
+- Verified original: 3840 × 2160, 60 fps, 32.950 seconds, 581,447,107 bytes; VP9 Profile 2, 10-bit HLG / BT.2020, no audio.
+- Adaptation: source seconds 2–15, tone-mapped from HLG to SDR BT.709 with Hable, graded to deep blue, reduced to 30 fps, and arranged as a 12-second loop. The final second crossfades to the preceding source second so the wrap continues naturally. No upscaling; the desktop file retains the native source dimensions.
+- Desktop: `assets/ocean-waves-4k.mp4`, 3840 × 2160, H.264 High / yuv420p, 12 seconds, 28,597,121 bytes. CRF 23 with 18 Mbps maximum target and 36 Mbps buffer.
+- Mobile: `assets/ocean-waves-1080.mp4`, 1920 × 1080, H.264 High / yuv420p, 12 seconds, 8,006,979 bytes. Lanczos downsample, CRF 23 with 5 Mbps maximum target and 10 Mbps buffer.
+- Both files use fast-start MP4 metadata and have no audio track. Playback stays on this site's origin. The shader composites the footage above the photograph's waterline; the underwater area remains the photograph with refraction and light effects.
+
 ## Half-submerged ocean photograph
 
 Added on 2026-10-12.

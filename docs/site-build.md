@@ -12,7 +12,9 @@ The build requires `site/index.html`, `material.css`, `styles.css`, `main.js`, `
 
 `material.css` contains the shared dark ocean palette, font declarations, base styles, and navigation. The homepage adds `styles.css`; generated notes pages add `notes.css` without loading homepage styles. The historical filename is retained, but the active design uses translucent deep-water surfaces. No UI framework is a build or runtime dependency.
 
-The homepage loads `waterline-ocean.webp` or its mobile crop as both a first-paint poster and WebGL texture. `sourceWaterline` is a three-point photographic calibration `[left, center, right]`, measured from the image's top edge. The shader follows the native meniscus rather than drawing a second waterline. Manual pause and system reduced motion stop continuous rendering; scrolling interpolates a descent into the lower half of the photograph. Original top-down ocean assets remain available for the notes background.
+The homepage first paints `waterline-ocean.webp` or its mobile crop. A local H.264 video then fades into the area above the photographed meniscus, preserving the lower underwater scene and scroll-driven descent. `sourceWaterline` calibrates three photographic points `[left, center, right]`; `videoHorizon` and `videoHorizonScreen` align the film horizon. The film is SDR BT.709, blue graded, 30 fps, and loops over 12 seconds with a one-second crossfade. See `site/ASSETS.md` and the public `/credits/` page for source and CC BY-SA 4.0 attribution.
+
+Desktop selects `ocean-waves-4k.mp4` (3840 × 2160). Coarse-pointer devices, Save-Data, and reported slow connections select `ocean-waves-1080.mp4` independently of the layout breakpoint, so phone rotation does not start a 4K decoder. Video frames are uploaded only when decoded frames change; UHD can use an 8,294,400-pixel framebuffer with high-precision shader UVs. Pause, hidden pages, and leaving the hero stop playback and rendering. Reduced motion defers video creation entirely. Unsupported video or WebGL keeps the photographic fallback. Original top-down ocean assets remain available for notes.
 
 ## Write and browse notes
 
