@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#071f2c">
+    <meta name="theme-color" content="#f5fafb">
     <meta name="description" content="从回调、挂起与恢复，到 Continuation 和状态机。关于 Kotlin 协程的一份学习笔记。">
     <meta name="author" content="whyjustus101">
     <meta property="og:title" content="协程背后，发生了什么？ · whyjustus101">
@@ -14,13 +14,13 @@
     <meta property="article:published_time" content="2024-11-18">
     <link rel="canonical" href="https://whyjustus101.github.io/notes/kotlin-coroutine/">
     <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/notes.css">
+    <link rel="preload" href="/assets/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/material.css?v=20261012-md3">
+    <link rel="stylesheet" href="/notes.css?v=20261012-md3">
     <title>协程背后，发生了什么？ · whyjustus101</title>
   </head>
   <body class="notes-page reading-page">
     <a class="skip-link" href="#article-body">跳至文章正文</a>
-    <div class="notes-backdrop" aria-hidden="true"></div>
     <div class="reading-progress" aria-hidden="true"></div>
     <header class="site-header is-scrolled">
       <a class="wordmark" href="/" aria-label="whyjustus101，返回首页">
@@ -46,7 +46,7 @@
         <div class="reading-layout notes-shell">
           <aside class="reading-sidebar" aria-label="文章目录">
             <details class="reading-toc" open>
-              <summary>本文目录 <span aria-hidden="true">⌄</span></summary>
+              <summary>本文目录 <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></summary>
               <nav aria-label="跳至文章章节"><ol><li><a href="#section-理解协程">理解协程</a></li>
 <li><a href="#section-回调">回调</a></li>
 <li><a href="#section-挂起函数">挂起函数</a></li>
@@ -339,6 +339,6 @@ log(5)
         <div><span>© <span id="current-year">2026</span> whyjustus101</span><a href="/">返回首页</a></div>
       </footer>
     </main>
-    <script type="module" src="/notes.js"></script>
+    <script type="module" src="/notes.js?v=20261012-md3"></script>
   </body>
 </html>

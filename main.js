@@ -107,6 +107,10 @@ if ('IntersectionObserver' in window) {
     entries.forEach(entry => {
       const link = document.querySelector(`[data-nav="${entry.target.id}"]`);
       link?.classList.toggle('is-active', entry.isIntersecting);
+      if (link?.getAttribute('href').startsWith('#')) {
+        if (entry.isIntersecting) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
     });
   }, { rootMargin: '-20% 0px -25% 0px' });
   document.querySelectorAll('#work, #notes').forEach(element => navigation.observe(element));
