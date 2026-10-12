@@ -1,6 +1,6 @@
 /**
- * A small progressive enhancement over the ocean photograph beneath the canvas.
- * The photograph supplies the detail; the shader only moves the water gently.
+ * A half-submerged lens over a photographic ocean poster.
+ * Real surface detail, a gently moving meniscus, and a scroll-driven descent.
  * No libraries, remote requests (apart from imageUrl), or generated noise textures.
  */
 
@@ -19,52 +19,114 @@ const FRAGMENT_SOURCE = `
 
   uniform sampler2D uOcean;
   uniform vec2 uCover;
+  uniform vec2 uResolution;
   uniform float uAspect;
+  uniform vec3 uSourceWaterline;
   uniform vec4 uPhases;
   uniform float uProgress;
   uniform float uMotion;
   varying vec2 vUv;
 
+  vec3 photograph(vec2 point) {
+    // Screen and source coordinates are measured down from the top. Textures
+    // are uploaded flipped, so only their lookup changes coordinate systems.
+    return texture2D(uOcean, clamp(vec2(point.x, 1.0 - point.y), 0.001, 0.999)).rgb;
+  }
+
   void main() {
-    // A little overscan leaves room for the swell without exposing image edges.
-    float zoom = 1.018 + uProgress * 0.072;
-    vec2 frame = (vUv - 0.5) / zoom + 0.5;
-    frame.y -= uProgress * 0.022;
+    vec2 screen = vec2(vUv.x, 1.0 - vUv.y);
+    float pixel = 1.0 / max(uResolution.y, 1.0);
+    float x = screen.x * min(uAspect, 2.4);
+    float descent = smoothstep(0.0, 1.0, uProgress);
+    float travel = descent * 0.84;
+    float sourceX = (screen.x - 0.5) * uCover.x + 0.5;
+    // Three measured points follow the photograph's natural curved meniscus.
+    // The fit is evaluated in source coordinates, including portrait crops.
+    float sourceLine = 2.0 * (sourceX - 0.5) * (sourceX - 1.0) * uSourceWaterline.x
+      + 4.0 * sourceX * (1.0 - sourceX) * uSourceWaterline.y
+      + 2.0 * sourceX * (sourceX - 0.5) * uSourceWaterline.z;
+    float stillWaterline = 0.48 - travel + (sourceLine - uSourceWaterline.y) / uCover.y;
 
-    // Broad, crossing swells drift along the same water surface. Their periods
-    // intentionally differ, so there is no obvious short animation loop.
-    vec2 p = vec2(vUv.x * min(uAspect, 2.4), vUv.y);
-    float a = sin(dot(p, vec2(7.5, -17.0)) + uPhases.x);
-    float b = sin(dot(p, vec2(-11.0, -23.0)) + uPhases.y + a * 0.26);
-    float c = sin(dot(p, vec2(19.0, -35.0)) + uPhases.z + b * 0.18);
+    // Long swells are deliberately unequal. Their scale is in CSS pixels,
+    // giving a close, slow water surface on both a phone and a large display.
+    float swellA = sin(x * 4.6 + uPhases.x + 0.5);
+    float swellB = sin(x * 9.7 - uPhases.y + 1.8);
+    float swellC = sin(x * 20.2 + uPhases.z + swellA * 0.35);
+    float swell = (swellA * 0.65 + swellB * 0.25 + swellC * 0.10);
+    float amplitude = clamp(25.0 * pixel, 0.016, 0.035);
+    float displacement = swell * amplitude;
+    float waterline = stillWaterline + displacement;
+    float distanceToWater = screen.y - waterline;
+    float submerged = smoothstep(-2.0 * pixel, 5.0 * pixel, distanceToWater);
+    float depth = max(0.0, distanceToWater);
 
-    // Perspective keeps the distant water calm. Tiny movement in both axes
-    // animates the existing crests instead of painting bright artificial waves.
-    float foreground = 0.09 + 0.91 * pow(1.0 - vUv.y, 1.75);
-    vec2 current = vec2(a * 0.71 + b * 0.29, b * 0.65 + c * 0.35);
-    frame += current * vec2(0.0033, 0.0023) * foreground * uMotion;
-    frame.x += sin(uPhases.w) * 0.0011 * uMotion;
+    // Pin the sky and the distant horizon. Only a lens-sized zone around the
+    // surface follows the swell; the source photograph supplies its detail.
+    float lens = exp(-pow(abs(screen.y - stillWaterline) / 0.115, 2.0));
+    vec2 source = vec2(
+      sourceX,
+      (screen.y + travel - 0.48 - displacement * lens) * uCover.y + uSourceWaterline.y
+    );
 
-    vec2 uv = (frame - 0.5) * uCover + 0.5;
-    vec3 sea = texture2D(uOcean, clamp(uv, 0.001, 0.999)).rgb;
+    float a = sin(x * 8.3 + depth * 13.0 + uPhases.y);
+    float b = sin(x * 15.7 - depth * 19.0 - uPhases.z + a * 0.4);
+    float c = sin(x * 29.0 + depth * 11.0 + uPhases.x);
+    vec2 refraction = vec2(a * 0.65 + b * 0.35, b * 0.65 + c * 0.35);
+    float refractionDepth = (0.30 + 0.70 * exp(-depth * 3.5)) * submerged;
+    source += refraction * vec2(0.0038, 0.0025) * refractionDepth * uMotion;
 
-    // Only the photograph's own highlights catch the changing light.
-    float luminance = dot(sea, vec3(0.2126, 0.7152, 0.0722));
-    float reflection = smoothstep(0.30, 0.85, luminance);
-    float light = (a * 0.55 + c * 0.45) * 0.022 * foreground * uMotion;
-    sea += vec3(0.76, 0.91, 1.0) * reflection * light;
+    vec3 color = photograph(source);
 
-    gl_FragColor = vec4(clamp(sea, 0.0, 1.0), 1.0);
+    // The photograph already has an irregular, thick lens meniscus. Preserve
+    // that water volume instead of adding a synthetic bright line over it.
+    float meniscus = exp(-pow(distanceToWater / (22.0 * pixel), 2.0));
+    float waveLight = dot(color, vec3(0.2126, 0.7152, 0.0722));
+
+    // Light disappears through a blue-green volume as the camera descends.
+    // Source detail remains near the surface; distant depths merge into ink.
+    vec3 deepWater = vec3(0.005, 0.029, 0.048);
+    float beyondImage = smoothstep(0.79, 1.06, source.y);
+    color = mix(color, deepWater, beyondImage * submerged);
+    vec3 absorption = exp(-depth * vec3(1.05, 0.44, 0.22));
+    color = mix(color, color * absorption, submerged);
+    color = mix(color, deepWater, submerged * smoothstep(0.16, 1.25, depth) * 0.52);
+
+    // Soft rays come from a distant patch of sky. Crossing wide and narrow
+    // lobes breaks their rhythm before they disappear into deep water.
+    float projection = (screen.x - 0.73) * min(uAspect, 1.9) / (depth + 0.22);
+    float broadRay = pow(max(0.0, sin(projection * 4.8 + 0.9 + uPhases.w)), 5.0);
+    float fineRay = pow(max(0.0, sin(projection * 12.7 - 1.3 - uPhases.w)), 9.0);
+    float ray = (broadRay * 0.75 + fineRay * 0.25) * exp(-depth * 2.3);
+    float beamFade = smoothstep(0.01, 0.14, depth) * (1.0 - descent * 0.65);
+    color += vec3(0.028, 0.080, 0.097) * ray * beamFade * submerged;
+
+    // Fleeting glints only catch highlights that exist in the photograph.
+    float glint = smoothstep(0.27, 0.64, waveLight) * meniscus;
+    glint *= pow(max(0.0, swellC * 0.5 + b * 0.5), 3.0) * 0.075 * uMotion;
+    color += vec3(0.69, 0.88, 0.91) * glint;
+
+    float edge = pow(abs(screen.x - 0.5) * 1.5, 2.0) * 0.13;
+    // The source and fallback poster already share a blue-hour color grade.
+    color *= 1.0 - edge;
+    color = mix(color, deepWater, descent * 0.34);
+    gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
   }
 `;
 
 /**
+ * sourceWaterline is the source image's waterline fraction measured from its
+ * top: either one value, or [left edge, center, right edge] for a curved line.
+ *
  * @param {HTMLCanvasElement} canvas Transparent canvas over a static poster.
- * @param {{imageUrl?: string, onReady?: () => void}} options
+ * @param {{imageUrl?: string, sourceWaterline?: number | [number, number, number], onReady?: () => void}} options
  * @returns {{setProgress: (progress: number) => void,
  *   setPaused: (paused: boolean) => void, destroy: () => void}}
  */
-export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.webp', onReady } = {}) {
+export function createOceanScene(canvas, {
+  imageUrl = '/assets/waterline-ocean.webp',
+  sourceWaterline = [0.517, 0.489, 0.361],
+  onReady,
+} = {}) {
   let gl = null;
   let program = null;
   let buffer = null;
@@ -155,10 +217,10 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
       const turn = Math.PI * 2;
       gl.uniform4f(
         uniforms.phases,
-        (elapsed * 0.47) % turn,
-        (elapsed * 0.31) % turn,
-        (elapsed * 0.63) % turn,
-        (elapsed * 0.055) % turn,
+        (elapsed * 0.39) % turn,
+        (elapsed * 0.27) % turn,
+        (elapsed * 0.51) % turn,
+        (elapsed * 0.031) % turn,
       );
       gl.uniform1f(uniforms.progress, reducedMotion ? 0 : progress);
       gl.uniform1f(uniforms.motion, reducedMotion ? 0 : 1);
@@ -185,7 +247,7 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
     const delta = previousTime ? Math.min((timestamp - previousTime) / 1000, 0.05) : 0;
     previousTime = timestamp;
     elapsed += delta;
-    progress += (targetProgress - progress) * (1 - Math.exp(-delta * 5));
+    progress += (targetProgress - progress) * (1 - Math.exp(-delta * 4.1));
     draw();
     schedule();
   }
@@ -201,7 +263,7 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
     }
 
     // Keep high-density laptops and large external displays within a modest
-    // pixel budget. One texture sample per pixel keeps the pass inexpensive.
+    // pixel budget. A single photographic lookup keeps the full-screen pass light.
     const maxDimension = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
     const ratio = Math.min(
       window.devicePixelRatio || 1,
@@ -220,6 +282,7 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
     const aspect = width / height;
     const imageAspect = imageWidth / imageHeight;
     gl.uniform1f(uniforms.aspect, aspect);
+    gl.uniform2f(uniforms.resolution, width, height);
     gl.uniform2f(uniforms.cover, Math.min(1, aspect / imageAspect), Math.min(1, imageAspect / aspect));
     draw();
     schedule();
@@ -313,6 +376,8 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
 
     uniforms = {
       cover: gl.getUniformLocation(program, 'uCover'),
+      resolution: gl.getUniformLocation(program, 'uResolution'),
+      sourceWaterline: gl.getUniformLocation(program, 'uSourceWaterline'),
       aspect: gl.getUniformLocation(program, 'uAspect'),
       phases: gl.getUniformLocation(program, 'uPhases'),
       progress: gl.getUniformLocation(program, 'uProgress'),
@@ -328,6 +393,10 @@ export function createOceanScene(canvas, { imageUrl = '/assets/ocean-surface.web
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.uniform1i(gl.getUniformLocation(program, 'uOcean'), 0);
+    const profile = Array.isArray(sourceWaterline) && sourceWaterline.length === 3
+      ? sourceWaterline : [sourceWaterline, sourceWaterline, sourceWaterline];
+    gl.uniform3f(uniforms.sourceWaterline, ...profile.map(point => Number.isFinite(point)
+      ? Math.max(0.05, Math.min(0.95, point)) : 0.48));
     gl.clearColor(0, 0, 0, 0);
 
     mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

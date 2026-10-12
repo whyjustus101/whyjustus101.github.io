@@ -1,4 +1,4 @@
-import { createOceanScene } from './ocean.js';
+import { createOceanScene } from './ocean.js?v=20261012-waterline';
 import { createParticleField } from './particles.js?v=20261012';
 
 const root = document.documentElement;
@@ -9,14 +9,20 @@ const canvas = document.querySelector('#ocean-canvas');
 const motionButton = document.querySelector('.motion-toggle');
 const motionLabel = document.querySelector('.motion-label');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const compactViewport = window.matchMedia('(max-width: 700px)');
 root.classList.add('has-js');
 
 // The poster paints before this enhancement. Loading or GPU failure leaves it intact.
-const ocean = createOceanScene(canvas, {
-  imageUrl: new URL(window.matchMedia('(max-width: 700px)').matches
-    ? './assets/ocean-surface-mobile.webp' : './assets/ocean-surface.webp', import.meta.url).href,
-  onReady: () => root.classList.add('scene-ready'),
-});
+function mountOcean() {
+  return createOceanScene(canvas, {
+    imageUrl: new URL(compactViewport.matches
+      ? './assets/waterline-ocean-mobile.webp' : './assets/waterline-ocean.webp', import.meta.url).href,
+    sourceWaterline: compactViewport.matches
+      ? [0.482, 0.484, 0.441] : [0.517, 0.489, 0.361],
+    onReady: () => root.classList.add('scene-ready'),
+  });
+}
+let ocean = mountOcean();
 const particles = createParticleField(document.querySelector('#ocean-particles'));
 
 let manuallyPaused = false;
@@ -74,6 +80,16 @@ motionButton.addEventListener('click', () => {
 const onMotionChange = () => { syncMotion(); requestScroll(); };
 if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', onMotionChange);
 else reducedMotion.addListener(onMotionChange);
+const onViewportChange = () => {
+  ocean.destroy();
+  root.classList.remove('scene-ready');
+  canvas.style.opacity = '';
+  ocean = mountOcean();
+  syncMotion();
+  renderScroll();
+};
+if (compactViewport.addEventListener) compactViewport.addEventListener('change', onViewportChange);
+else compactViewport.addListener(onViewportChange);
 window.addEventListener('scroll', requestScroll, { passive: true });
 window.addEventListener('resize', requestScroll, { passive: true });
 
