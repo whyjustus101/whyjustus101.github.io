@@ -1,39 +1,21 @@
-import { createOceanScene } from './ocean.js?v=20261013-video';
+import { createOceanScene } from './ocean.js?v=20261013-full-video';
 import { createParticleField } from './particles.js?v=20261012';
 
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
 const hero = document.querySelector('.hero');
 const heroContent = document.querySelector('.hero-content');
-const canvas = document.querySelector('#ocean-canvas');
+const video = document.querySelector('#ocean-video');
 const motionButton = document.querySelector('.motion-toggle');
 const motionLabel = document.querySelector('.motion-label');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const compactViewport = window.matchMedia('(max-width: 700px)');
-// Keep phone rotation from switching to a much heavier 4K decoder.
-const connection = navigator.connection;
-const useCompactVideo = window.matchMedia('(pointer: coarse)').matches
-  || connection?.saveData === true;
-const videoUrl = new URL(useCompactVideo
-  ? './assets/ocean-waves-1080.mp4' : './assets/ocean-waves-4k.mp4', import.meta.url).href;
 root.classList.add('has-js');
 
-// The poster paints before this enhancement. Loading or GPU failure leaves it intact.
-function mountOcean() {
-  return createOceanScene(canvas, {
-    videoUrl,
-    videoMode: 'surface',
-    videoHorizon: 0.59,
-    videoHorizonScreen: 0.12,
-    videoTint: [1, 1, 1],
-    imageUrl: new URL(compactViewport.matches
-      ? './assets/waterline-ocean-mobile.webp' : './assets/waterline-ocean.webp', import.meta.url).href,
-    sourceWaterline: compactViewport.matches
-      ? [0.482, 0.484, 0.441] : [0.517, 0.489, 0.361],
-    onReady: () => root.classList.add('scene-ready'),
-  });
-}
-let ocean = mountOcean();
+const ocean = createOceanScene(video, {
+  videoUrl: new URL('./assets/ocean-full-4k.mp4', import.meta.url).href,
+  onReady: () => root.classList.add('scene-ready'),
+  onBlocked: () => { manuallyPaused = true; syncMotion(); },
+});
 const particles = createParticleField(document.querySelector('#ocean-particles'));
 
 let manuallyPaused = false;
@@ -43,7 +25,7 @@ let scrollFrame = 0;
 
 function syncMotion() {
   const paused = manuallyPaused || reducedMotion.matches;
-  ocean.setPaused(paused || beyondHero);
+  ocean.setPaused(paused);
   particles.setPaused(paused || beyondHero);
   motionButton.setAttribute('aria-pressed', String(paused));
   motionButton.setAttribute('aria-label', paused ? '播放背景动效' : '暂停背景动效');
@@ -91,16 +73,6 @@ motionButton.addEventListener('click', () => {
 const onMotionChange = () => { syncMotion(); requestScroll(); };
 if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', onMotionChange);
 else reducedMotion.addListener(onMotionChange);
-const onViewportChange = () => {
-  ocean.destroy();
-  root.classList.remove('scene-ready');
-  canvas.style.opacity = '';
-  ocean = mountOcean();
-  syncMotion();
-  renderScroll();
-};
-if (compactViewport.addEventListener) compactViewport.addEventListener('change', onViewportChange);
-else compactViewport.addListener(onViewportChange);
 window.addEventListener('scroll', requestScroll, { passive: true });
 window.addEventListener('resize', requestScroll, { passive: true });
 
@@ -147,6 +119,6 @@ if ('IntersectionObserver' in window) {
 
 document.querySelector('#current-year').textContent = String(new Date().getFullYear());
 window.addEventListener('pagehide', () => { ocean.setPaused(true); particles.setPaused(true); });
-window.addEventListener('pageshow', syncMotion);
-syncMotion();
+window.addEventListener('pageshow', () => { renderScroll(); syncMotion(); });
 renderScroll();
+syncMotion();
