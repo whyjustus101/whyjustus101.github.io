@@ -1,7 +1,7 @@
 /**
- * A half-submerged lens over a photographic ocean poster.
- * Real surface detail, a gently moving meniscus, and a scroll-driven descent.
- * No libraries, remote requests (apart from imageUrl), or generated noise textures.
+ * A half-submerged lens over a photographic ocean poster and optional film.
+ * Real video frames, a gently moving meniscus, and a scroll-driven descent.
+ * No dependencies; media is loaded only from the supplied image/video URLs.
  */
 
 const VERTEX_SOURCE = `
@@ -15,9 +15,19 @@ const VERTEX_SOURCE = `
 `;
 
 const FRAGMENT_SOURCE = `
-  precision mediump float;
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+  #else
+    precision mediump float;
+  #endif
 
   uniform sampler2D uOcean;
+  uniform sampler2D uVideo;
+  uniform vec2 uVideoCover;
+  uniform vec2 uVideoHorizon;
+  uniform vec3 uVideoTint;
+  uniform float uVideoMix;
+  uniform float uVideoMode;
   uniform vec2 uCover;
   uniform vec2 uResolution;
   uniform float uAspect;
@@ -54,7 +64,8 @@ const FRAGMENT_SOURCE = `
     float swellC = sin(x * 20.2 + uPhases.z + swellA * 0.35);
     float swell = (swellA * 0.65 + swellB * 0.25 + swellC * 0.10);
     float amplitude = clamp(25.0 * pixel, 0.016, 0.035);
-    float displacement = swell * amplitude;
+    // Real split-shot footage supplies its own surface movement.
+    float displacement = swell * amplitude * (1.0 - uVideoMix * (1.0 - uVideoMode));
     float waterline = stillWaterline + displacement;
     float distanceToWater = screen.y - waterline;
     float submerged = smoothstep(-2.0 * pixel, 5.0 * pixel, distanceToWater);
@@ -76,6 +87,18 @@ const FRAGMENT_SOURCE = `
     source += refraction * vec2(0.0038, 0.0025) * refractionDepth * uMotion;
 
     vec3 color = photograph(source);
+    // Film is sampled without procedural refraction. Surface-only footage
+    // fades into the original lens meniscus, keeping its underwater view.
+    vec2 videoPoint = vec2((screen.x - 0.5) * uVideoCover.x + 0.5,
+      (screen.y + travel - uVideoHorizon.y) * uVideoCover.y + uVideoHorizon.x);
+    vec2 splitPoint = vec2(videoPoint.x,
+      (screen.y + travel - 0.48) * uVideoCover.y + uSourceWaterline.y);
+    videoPoint = mix(splitPoint, videoPoint, uVideoMode);
+    vec3 film = texture2D(uVideo, clamp(vec2(videoPoint.x, 1.0 - videoPoint.y), 0.001, 0.999)).rgb;
+    film *= uVideoTint;
+    float surfaceBlend = 1.0 - smoothstep(-0.13, -0.025, distanceToWater);
+    float filmBlend = mix(1.0, surfaceBlend, uVideoMode) * uVideoMix;
+    color = mix(color, film, filmBlend);
 
     // The photograph already has an irregular, thick lens meniscus. Preserve
     // that water volume instead of adding a synthetic bright line over it.
@@ -116,21 +139,44 @@ const FRAGMENT_SOURCE = `
 /**
  * sourceWaterline is the source image's waterline fraction measured from its
  * top: either one value, or [left edge, center, right edge] for a curved line.
+ * videoHorizon and videoHorizonScreen align the source and viewport horizons.
+ * videoTint multiplies film RGB; use [1, 1, 1] for already graded footage.
  *
  * @param {HTMLCanvasElement} canvas Transparent canvas over a static poster.
- * @param {{imageUrl?: string, sourceWaterline?: number | [number, number, number], onReady?: () => void}} options
+ * @param {{imageUrl?: string, videoUrl?: string, videoMode?: 'split' | 'surface',
+ *   videoHorizon?: number, videoHorizonScreen?: number, videoTint?: [number, number, number],
+ *   sourceWaterline?: number | [number, number, number], onReady?: () => void}} options
  * @returns {{setProgress: (progress: number) => void,
  *   setPaused: (paused: boolean) => void, destroy: () => void}}
  */
 export function createOceanScene(canvas, {
   imageUrl = '/assets/waterline-ocean.webp',
   sourceWaterline = [0.517, 0.489, 0.361],
+  videoUrl,
+  videoMode = 'surface',
+  videoHorizon = 0.35,
+  videoHorizonScreen = 0.14,
+  videoTint = [0.42, 0.56, 0.72],
   onReady,
 } = {}) {
   let gl = null;
   let program = null;
   let buffer = null;
   let texture = null;
+  let videoTexture = null;
+  let video = null;
+  let videoFrame = 0;
+  let playGeneration = 0;
+  let playPending = false;
+  let videoFailed = false;
+  let videoFrameReady = false;
+  let videoFrameDirty = false;
+  let videoMix = 0;
+  let videoWidth = 1;
+  let videoHeight = 1;
+  let uploadedVideoWidth = 0;
+  let uploadedVideoHeight = 0;
+  let uploadedVideoTime = -1;
   let vertexShader = null;
   let fragmentShader = null;
   let resizeObserver = null;
@@ -164,6 +210,18 @@ export function createOceanScene(canvas, {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     animationFrame = 0;
     previousTime = 0;
+    playGeneration += 1;
+    playPending = false;
+    if (videoFrame && video?.cancelVideoFrameCallback) video.cancelVideoFrameCallback(videoFrame);
+    videoFrame = 0;
+    video?.pause();
+  }
+
+  function releaseVideo() {
+    if (!video) return;
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
   }
 
   function destroy() {
@@ -173,6 +231,7 @@ export function createOceanScene(canvas, {
     resizeObserver?.disconnect();
     intersectionObserver?.disconnect();
     listeners.forEach((remove) => remove());
+    releaseVideo();
     if (image) {
       image.onload = null;
       image.onerror = null;
@@ -182,6 +241,7 @@ export function createOceanScene(canvas, {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       if (texture) gl.deleteTexture(texture);
+      if (videoTexture) gl.deleteTexture(videoTexture);
       if (buffer) gl.deleteBuffer(buffer);
       if (program) gl.deleteProgram(program);
       if (vertexShader) gl.deleteShader(vertexShader);
@@ -190,13 +250,119 @@ export function createOceanScene(canvas, {
   }
 
   function fallback() {
+    if (destroyed) return;
     // A lost context or failed texture must never cover the working poster.
     if (canvas?.style) canvas.style.opacity = '0';
     destroy();
   }
 
+  function isActive() {
+    return !destroyed && !paused && !reducedMotion && !document.hidden && inView && width > 0 && height > 0;
+  }
+
   function canAnimate() {
-    return loaded && !destroyed && !paused && !reducedMotion && !document.hidden && inView;
+    return loaded && isActive();
+  }
+
+  function watchVideoFrames() {
+    if (!video || videoFrame || !isActive() || !video.requestVideoFrameCallback) return;
+    videoFrame = video.requestVideoFrameCallback(() => {
+      videoFrame = 0;
+      if (!isActive() || videoFailed) return;
+      videoFrameDirty = true;
+      schedule();
+      watchVideoFrames();
+    });
+  }
+
+  function videoFallback() {
+    if (destroyed || videoFailed) return;
+    videoFailed = true;
+    stop();
+    releaseVideo();
+    videoFrameReady = false;
+    videoFrameDirty = false;
+    videoMix = 0;
+    resize();
+  }
+
+  function refreshVideo() {
+    if (!videoUrl || videoFailed || !isActive() || !loaded) return;
+    if (!video) {
+      video = document.createElement('video');
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.loop = true;
+      video.preload = 'auto';
+      if (new URL(videoUrl, document.baseURI).origin !== window.location.origin) video.crossOrigin = 'anonymous';
+      listen(video, 'error', videoFallback);
+      listen(video, 'loadeddata', () => {
+        if (destroyed || videoFailed || !isActive()) return;
+        videoFrameDirty = true;
+        schedule();
+      });
+      video.src = videoUrl;
+    }
+    watchVideoFrames();
+    if (playPending || !video.paused) return;
+    const generation = ++playGeneration;
+    playPending = true;
+    let playing;
+    try { playing = video.play(); } catch { videoFallback(); return; }
+    if (!playing?.then) { playPending = false; return; }
+    playing.then(() => {
+      if (destroyed || generation !== playGeneration) return;
+      playPending = false;
+      if (!isActive()) video.pause();
+    }).catch(error => {
+      if (destroyed || generation !== playGeneration) return;
+      playPending = false;
+      // Pausing while play() is pending normally rejects with AbortError.
+      if (error.name === 'AbortError') return;
+      if (error.name === 'NotAllowedError') {
+        if (videoFrame && video.cancelVideoFrameCallback) video.cancelVideoFrameCallback(videoFrame);
+        videoFrame = 0;
+        return; // A subsequent user-initiated setPaused(false) retries play().
+      }
+      videoFallback();
+    });
+  }
+
+  function uploadVideoFrame() {
+    if (!video || videoFailed || video.readyState < 2) return;
+    if (!video.requestVideoFrameCallback && video.currentTime !== uploadedVideoTime) videoFrameDirty = true;
+    if (!videoFrameDirty) return;
+    videoFrameDirty = false;
+    const nextWidth = video.videoWidth;
+    const nextHeight = video.videoHeight;
+    if (!nextWidth || !nextHeight) return;
+    if (Math.max(nextWidth, nextHeight) > gl.getParameter(gl.MAX_TEXTURE_SIZE)) {
+      videoFallback();
+      return;
+    }
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, videoTexture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    if (uploadedVideoWidth !== nextWidth || uploadedVideoHeight !== nextHeight) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+      if (gl.getError() !== gl.NO_ERROR) {
+        gl.activeTexture(gl.TEXTURE0);
+        videoFallback();
+        return;
+      }
+      uploadedVideoWidth = nextWidth;
+      uploadedVideoHeight = nextHeight;
+    } else {
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video);
+    }
+    gl.activeTexture(gl.TEXTURE0);
+    uploadedVideoTime = video.currentTime;
+    videoWidth = nextWidth;
+    videoHeight = nextHeight;
+    const firstFrame = !videoFrameReady;
+    videoFrameReady = true;
+    if (firstFrame) resize(false);
   }
 
   function schedule() {
@@ -212,6 +378,9 @@ export function createOceanScene(canvas, {
         fallback();
         return;
       }
+      uploadVideoFrame();
+      if (destroyed) return;
+      gl.uniform1f(uniforms.videoMix, reducedMotion ? 0 : videoMix);
       // Bounded phases avoid low-precision mobile shaders stuttering after a
       // long session. Every wrap is a complete, visually continuous sine turn.
       const turn = Math.PI * 2;
@@ -247,12 +416,16 @@ export function createOceanScene(canvas, {
     const delta = previousTime ? Math.min((timestamp - previousTime) / 1000, 0.05) : 0;
     previousTime = timestamp;
     elapsed += delta;
+    if (videoFrameReady) videoMix = Math.min(1, videoMix + delta / 0.8);
     progress += (targetProgress - progress) * (1 - Math.exp(-delta * 4.1));
     draw();
-    schedule();
+    // At rest, actual video frames drive rendering. RAF only fills in scroll
+    // easing/fades, or polls currentTime on browsers without the video API.
+    if (!videoFrameReady || !video?.requestVideoFrameCallback || videoMix < 1
+      || Math.abs(targetProgress - progress) > 0.0005) schedule();
   }
 
-  function resize() {
+  function resize(render = true) {
     if (destroyed || !gl) return;
     const bounds = canvas.getBoundingClientRect();
     width = Math.max(0, bounds.width);
@@ -262,13 +435,15 @@ export function createOceanScene(canvas, {
       return;
     }
 
-    // Keep high-density laptops and large external displays within a modest
-    // pixel budget. A single photographic lookup keeps the full-screen pass light.
+    // A real UHD source can fill a 3840x2160 framebuffer, including a 1080p
+    // CSS viewport at DPR 2. Smaller media never buys an oversized buffer.
+    const nativeVideoPixels = videoFrameReady ? videoWidth * videoHeight : 3_000_000;
+    const pixelBudget = Math.min(8_294_400, nativeVideoPixels);
     const maxDimension = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
     const ratio = Math.min(
       window.devicePixelRatio || 1,
-      1.5,
-      Math.sqrt(3_000_000 / (width * height)),
+      videoFrameReady ? 2 : 1.5,
+      Math.sqrt(pixelBudget / (width * height)),
       maxDimension / width,
       maxDimension / height,
     );
@@ -284,13 +459,17 @@ export function createOceanScene(canvas, {
     gl.uniform1f(uniforms.aspect, aspect);
     gl.uniform2f(uniforms.resolution, width, height);
     gl.uniform2f(uniforms.cover, Math.min(1, aspect / imageAspect), Math.min(1, imageAspect / aspect));
-    draw();
+    const videoAspect = videoWidth / videoHeight;
+    gl.uniform2f(uniforms.videoCover, Math.min(1, aspect / videoAspect), Math.min(1, videoAspect / aspect));
+    if (render) draw();
+    refreshVideo();
     schedule();
   }
 
   function refreshActivity() {
     stop();
     if (!document.hidden && inView) {
+      refreshVideo();
       draw();
       schedule();
     }
@@ -378,6 +557,8 @@ export function createOceanScene(canvas, {
       cover: gl.getUniformLocation(program, 'uCover'),
       resolution: gl.getUniformLocation(program, 'uResolution'),
       sourceWaterline: gl.getUniformLocation(program, 'uSourceWaterline'),
+      videoCover: gl.getUniformLocation(program, 'uVideoCover'),
+      videoMix: gl.getUniformLocation(program, 'uVideoMix'),
       aspect: gl.getUniformLocation(program, 'uAspect'),
       phases: gl.getUniformLocation(program, 'uPhases'),
       progress: gl.getUniformLocation(program, 'uProgress'),
@@ -397,6 +578,24 @@ export function createOceanScene(canvas, {
       ? sourceWaterline : [sourceWaterline, sourceWaterline, sourceWaterline];
     gl.uniform3f(uniforms.sourceWaterline, ...profile.map(point => Number.isFinite(point)
       ? Math.max(0.05, Math.min(0.95, point)) : 0.48));
+    videoTexture = gl.createTexture();
+    if (!videoTexture) throw new Error('Video texture allocation failed');
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, videoTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+    gl.uniform1i(gl.getUniformLocation(program, 'uVideo'), 1);
+    gl.uniform1f(gl.getUniformLocation(program, 'uVideoMode'), videoMode === 'split' ? 0 : 1);
+    gl.uniform2f(gl.getUniformLocation(program, 'uVideoHorizon'),
+      Number.isFinite(videoHorizon) ? videoHorizon : 0.35,
+      Number.isFinite(videoHorizonScreen) ? videoHorizonScreen : 0.14);
+    const tint = Array.isArray(videoTint) && videoTint.length === 3 ? videoTint : [1, 1, 1];
+    gl.uniform3f(gl.getUniformLocation(program, 'uVideoTint'), ...tint.map(channel =>
+      Number.isFinite(channel) ? Math.max(0, Math.min(2, channel)) : 1));
+    gl.activeTexture(gl.TEXTURE0);
     gl.clearColor(0, 0, 0, 0);
 
     mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -449,6 +648,8 @@ export function createOceanScene(canvas, {
           context.drawImage(image, 0, 0, resized.width, resized.height);
           source = resized;
         }
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
         loaded = true;

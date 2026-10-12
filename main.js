@@ -1,4 +1,4 @@
-import { createOceanScene } from './ocean.js?v=20261012-waterline';
+import { createOceanScene } from './ocean.js?v=20261013-video';
 import { createParticleField } from './particles.js?v=20261012';
 
 const root = document.documentElement;
@@ -10,11 +10,22 @@ const motionButton = document.querySelector('.motion-toggle');
 const motionLabel = document.querySelector('.motion-label');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const compactViewport = window.matchMedia('(max-width: 700px)');
+// Keep phone rotation from switching to a much heavier 4K decoder.
+const connection = navigator.connection;
+const useCompactVideo = window.matchMedia('(pointer: coarse)').matches
+  || connection?.saveData || /^(slow-2g|2g|3g)$/.test(connection?.effectiveType || '');
+const videoUrl = new URL(useCompactVideo
+  ? './assets/ocean-waves-1080.mp4' : './assets/ocean-waves-4k.mp4', import.meta.url).href;
 root.classList.add('has-js');
 
 // The poster paints before this enhancement. Loading or GPU failure leaves it intact.
 function mountOcean() {
   return createOceanScene(canvas, {
+    videoUrl,
+    videoMode: 'surface',
+    videoHorizon: 0.59,
+    videoHorizonScreen: 0.12,
+    videoTint: [1, 1, 1],
     imageUrl: new URL(compactViewport.matches
       ? './assets/waterline-ocean-mobile.webp' : './assets/waterline-ocean.webp', import.meta.url).href,
     sourceWaterline: compactViewport.matches
