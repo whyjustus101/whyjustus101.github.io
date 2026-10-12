@@ -62,7 +62,7 @@ async function build() {
   }
   await Promise.all(['index.html', 'material.css', 'styles.css', 'main.js', 'ocean.js', 'particles.js'].map(name => requireFile(join(site, name))));
   if (!(await inspect(join(site, 'assets')))?.isDirectory()) throw new Error('Required site/assets directory is missing.');
-  await Promise.all(['waterline-ocean.webp', 'waterline-ocean-mobile.webp', 'ocean-waves-4k.mp4', 'ocean-waves-1080.mp4'].map(name => requireFile(join(site, 'assets', name))));
+  await Promise.all(['ocean-full-poster.webp', 'ocean-full-poster-mobile.webp', 'ocean-full-4k.mp4'].map(name => requireFile(join(site, 'assets', name))));
 
   const requestedOut = resolve(options['--out'] || join(repo, 'dist'));
   const existing = await inspect(requestedOut);

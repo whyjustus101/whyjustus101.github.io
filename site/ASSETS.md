@@ -1,6 +1,6 @@
 # Self-hosted visual assets
 
-Retrieved and verified on 2026-10-11. All production images and fonts are served from this repository; page rendering does not depend on an external image or font service.
+Retrieved and verified from 2026-10-11 through 2026-10-13. All production video, images and fonts are served from this repository; page rendering does not depend on an external image or font service.
 
 ## Ocean photograph
 
@@ -16,33 +16,17 @@ Retrieved and verified on 2026-10-11. All production images and fonts are served
 - Edits: resizing, portrait crop for the mobile variant, WebP compression; no generated elements or retouching.
 - Suggested credit: “Ocean photograph by Jeremy Bishop, via Wikimedia Commons (CC0).”
 
-## 4K ocean motion footage
+## Full-scene 4K ocean film
 
-- Work: **Mavericks Beach 3 2024-03-18** by **Fastily**, recorded March 18, 2024.
-- Source: https://commons.wikimedia.org/wiki/File:Mavericks_Beach_3_2024-03-18.webm
-- Creator: https://commons.wikimedia.org/wiki/User_talk:Fastily
-- Original: https://upload.wikimedia.org/wikipedia/commons/c/c1/Mavericks_Beach_3_2024-03-18.webm
-- License: **CC BY-SA 4.0**, https://creativecommons.org/licenses/by-sa/4.0/ . The adapted MP4 files remain licensed CC BY-SA 4.0; visible attribution is linked from the homepage footer to `/credits/`.
-- Verified original: 3840 × 2160, 60 fps, 32.950 seconds, 581,447,107 bytes; VP9 Profile 2, 10-bit HLG / BT.2020, no audio.
-- Adaptation: source seconds 2–15, tone-mapped from HLG to SDR BT.709 with Hable, graded to deep blue, reduced to 30 fps, and arranged as a 12-second loop. The final second crossfades to the preceding source second so the wrap continues naturally. No upscaling; the desktop file retains the native source dimensions.
-- Desktop: `assets/ocean-waves-4k.mp4`, 3840 × 2160, H.264 High / yuv420p, 12 seconds, 28,597,121 bytes. CRF 23 with 18 Mbps maximum target and 36 Mbps buffer.
-- Mobile: `assets/ocean-waves-1080.mp4`, 1920 × 1080, H.264 High / yuv420p, 12 seconds, 8,006,979 bytes. Lanczos downsample, CRF 23 with 5 Mbps maximum target and 10 Mbps buffer.
-- Both files use fast-start MP4 metadata and have no audio track. Playback stays on this site's origin. The shader composites the footage above the photograph's waterline; the underwater area remains the photograph with refraction and light effects.
+Updated on 2026-10-13. The entire moving background is a finished video assembled from two real 4K recordings. It is a composite, not one continuous half-submerged camera shot. No still photograph is used inside the playing film.
 
-## Half-submerged ocean photograph
-
-Added on 2026-10-12.
-
-- Work: **Nenue lurking below**.
-- Creator: **John Burns / NOAA**, from the NOAA Office of National Marine Sanctuaries collection; photographed in Papahānaumokuākea Marine National Monument.
-- Source and license record: [Wikimedia Commons — Nenue lurking below (40176628190).jpg](https://commons.wikimedia.org/wiki/File:Nenue_lurking_below_(40176628190).jpg).
-- Original publication: [NOAA Office of National Marine Sanctuaries on Flickr](https://www.flickr.com/photos/onms/40176628190/).
-- License: **Public domain**, recorded by Wikimedia Commons as **PD-US-NOAA** (United States government work).
-- Original size: 2640 × 3960.
-- `assets/waterline-ocean.webp`: 2400 × 1500. Crop from original `(0, 2050)` to `(2640, 3700)`.
-- `assets/waterline-ocean-mobile.webp`: 1080 × 1620. Crop from original `(607, 1820)` to `(2033, 3960)`.
-- Edits: cropping, resizing, a dark blue color grade, and WebP compression. Runtime refraction and surface motion are original WebGL effects. No generated imagery or added subjects.
-- Credit: “Ocean photograph by John Burns / NOAA (public domain).”
+- Output: `assets/ocean-full-4k.mp4`, 3840 × 2160, 30 fps, 10 seconds, 24,188,345 bytes, H.264 High / yuv420p, SDR BT.709, no audio, fast-start metadata. All devices load this same 4K file.
+- Above water: **Mavericks Beach 3 2024-03-18**, by **Fastily**, recorded March 18, 2024. [Source](https://commons.wikimedia.org/wiki/File:Mavericks_Beach_3_2024-03-18.webm), [creator](https://commons.wikimedia.org/wiki/User_talk:Fastily), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Original: 3840 × 2160, 60 fps, 32.950 seconds, 581,447,107 bytes, VP9 Profile 2, HLG / BT.2020. The source was tone-mapped with Hable and graded blue; the horizon is positioned using a 3840 × 1200 crop starting at y=960 from the graded footage.
+- Below water: **Discovering Tenggol: Aerial Views and Submerged Delights in 4K**, by **Steven Lee**, recorded July 6, 2023. [Original publication](https://www.youtube.com/watch?v=VIVrRWn4vZY), [creator](https://www.youtube.com/@stevenlsw), [Commons license record](https://commons.wikimedia.org/wiki/File:Discovering_Tenggol-_Aerial_Views_and_Submerged_Delights_in_4K.webm), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The author's native 3840 × 2160 VP9 / 29.97 fps stream was downloaded and decoded to verify resolution. This uses the continuous 1160.5–1167 second reef-and-fish shot, slowed to fit 11 seconds and graded blue. Narrow source pillarbox edges are cropped by 16 pixels on each side before fitting the 4K frame; the visible underwater window is a 3840 × 1400 crop starting at y=160, positioned at output y=760.
+- Editing: the two filmed regions are joined with a gently moving, feathered waterline mask. A one-second crossfade joins the end to the beginning, producing a 10-second loop. Pixel content on both sides comes from moving footage; the waterline is an editing mask.
+- Adapted film and first-frame posters are distributed under **CC BY-SA 4.0**, with both authors and original licenses credited on `/credits/`.
+- Posters: `assets/ocean-full-poster.webp` (3840 × 2160) and `assets/ocean-full-poster-mobile.webp` (1080 × 2160 center crop). Both are WebP encodings of the film's first frame, used only before playback, when playback fails, or for reduced motion.
+- The source downloads and editing intermediates are not needed to build the website. The normal build copies the committed MP4 and WebP assets without ffmpeg.
 
 ## Fonts
 

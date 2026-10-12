@@ -10,15 +10,15 @@
     <meta property="og:description" content="写代码，记录灵感。保持好奇，继续探索。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://whyjustus101.github.io/">
-    <meta property="og:image" content="https://whyjustus101.github.io/assets/waterline-ocean.webp">
+    <meta property="og:image" content="https://whyjustus101.github.io/assets/ocean-full-poster.webp">
     <link rel="canonical" href="https://whyjustus101.github.io/">
     <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
     <link rel="preload" href="/assets/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/waterline-ocean.webp" as="image" media="(min-width: 701px)" fetchpriority="high">
-    <link rel="preload" href="/assets/waterline-ocean-mobile.webp" as="image" media="(max-width: 700px)" fetchpriority="high">
+    <link rel="preload" href="/assets/ocean-full-poster.webp" as="image" media="(min-width: 701px)" fetchpriority="high">
+    <link rel="preload" href="/assets/ocean-full-poster-mobile.webp" as="image" media="(max-width: 700px)" fetchpriority="high">
     <link rel="stylesheet" href="/material.css?v=20261012-waterline">
-    <link rel="stylesheet" href="/styles.css?v=20261012-waterline">
+    <link rel="stylesheet" href="/styles.css?v=20261013-full-video">
     <title>whyjustus101 — Beyond the surface</title>
   </head>
   <body class="home-page">
@@ -26,10 +26,10 @@
 
     <div class="ocean-stage" aria-hidden="true">
       <picture>
-        <source media="(max-width: 700px)" srcset="/assets/waterline-ocean-mobile.webp">
-        <img class="ocean-poster" src="/assets/waterline-ocean.webp" alt="" fetchpriority="high" decoding="async">
+        <source media="(max-width: 700px)" srcset="/assets/ocean-full-poster-mobile.webp">
+        <img class="ocean-poster" src="/assets/ocean-full-poster.webp" alt="" fetchpriority="high" decoding="async">
       </picture>
-      <canvas id="ocean-canvas"></canvas>
+      <video id="ocean-video" muted playsinline loop preload="none" disablepictureinpicture disableremoteplayback></video>
       <div class="ocean-shade"></div>
       <div class="ocean-grain"></div>
       <canvas id="ocean-particles"></canvas>
@@ -117,6 +117,6 @@
         </footer>
       </div>
     </main>
-    <script type="module" src="/main.js?v=20261013-video-4k"></script>
+    <script type="module" src="/main.js?v=20261013-full-video"></script>
   </body>
 </html>
