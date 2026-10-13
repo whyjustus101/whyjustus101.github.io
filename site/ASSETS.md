@@ -1,6 +1,6 @@
 # Self-hosted visual assets
 
-Retrieved and verified from 2026-10-11 through 2026-10-13. All production video, images and fonts are served from this repository; page rendering does not depend on an external image or font service.
+Retrieved and verified from 2026-10-11 through 2026-10-13. Production media is served from this repository. The current interface uses installed system fonts and does not request font files. Project illustrations are original HTML, CSS and SVG; no Apple product images, logos or font files are included in the redesign.
 
 ## Ocean photograph
 
@@ -33,6 +33,8 @@ Updated on 2026-10-13. The entire moving background is one uninterrupted, real h
 - The source downloads and editing intermediates are not needed to build the website. The normal build copies the committed MP4 and WebP assets without ffmpeg.
 
 ## Fonts
+
+The following licensed fonts are retained from earlier layouts. The current system-font interface does not load or preload them.
 
 All fonts are redistributed under the **SIL Open Font License 1.1**. The original license files and copyright notices are included alongside the fonts. Bebas Neue and Manrope were converted from Google Fonts' official source TTF files to WOFF2 with fontTools/Brotli; glyphs, family names, and font designs were preserved.
 

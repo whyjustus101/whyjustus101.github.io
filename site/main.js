@@ -1,5 +1,5 @@
-import { createOceanScene } from './ocean.js?v=20261013-hd';
-import { createParticleField } from './particles.js?v=20261013-hd';
+import { createOceanScene } from './ocean.js?v=20261013-studio';
+import { createParticleField } from './particles.js?v=20261013-studio';
 
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
@@ -31,7 +31,7 @@ let scrollFrame = 0;
 
 function syncMotion() {
   const paused = manuallyPaused || reducedMotion.matches;
-  ocean.setPaused(paused);
+  ocean.setPaused(paused || beyondHero);
   particles.setPaused(paused || beyondHero);
   motionButton.setAttribute('aria-pressed', String(paused));
   motionButton.setAttribute('aria-label', paused ? '播放背景动效' : '暂停背景动效');
@@ -51,15 +51,15 @@ function renderScroll() {
   const heroHeight = hero.offsetHeight;
   const progress = Math.min(1, Math.max(0, y / heroHeight));
   header.classList.toggle('is-scrolled', y > 45);
-  ocean.setProgress(progress);
+  ocean.setProgress(progress * 0.16);
   particles.setProgress(progress);
-  const nowBeyond = y > heroHeight * 1.35;
+  const nowBeyond = y >= heroHeight;
   if (nowBeyond !== beyondHero) {
     beyondHero = nowBeyond;
     syncMotion();
   }
   if (!reducedMotion.matches) {
-    heroContent.style.transform = `translate3d(0, ${Math.min(y * .2, 170)}px, 0)`;
+    heroContent.style.transform = `translate3d(0, ${Math.min(y * .12, 100)}px, 0)`;
     heroContent.style.opacity = String(Math.max(0, 1 - progress * 1.3));
   } else {
     heroContent.style.transform = '';
@@ -87,7 +87,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     const target = document.getElementById(link.getAttribute('href').slice(1));
     if (!target) return;
     event.preventDefault();
-    const offset = target.id === 'top' ? 0 : 100;
+    const offset = target.id === 'top' ? 0 : 84;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion.matches ? 'instant' : 'smooth' });
     history.replaceState(null, '', link.getAttribute('href'));
