@@ -1,5 +1,5 @@
-import { createOceanScene } from './ocean.js?v=20261013-single-shot';
-import { createParticleField } from './particles.js?v=20261012';
+import { createOceanScene } from './ocean.js?v=20261013-hd';
+import { createParticleField } from './particles.js?v=20261013-hd';
 
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
@@ -11,8 +11,14 @@ const motionLabel = document.querySelector('.motion-label');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 root.classList.add('has-js');
 
+// Choose once so rotation or resizing never restarts the film or downloads both.
+const connection = navigator.connection;
+const lightweightVideo = window.matchMedia('(max-width: 700px), (pointer: coarse)').matches
+  || connection?.saveData
+  || /^(slow-2g|2g|3g)$/.test(connection?.effectiveType || '');
+const videoFile = lightweightVideo ? 'ocean-dome-720p.mp4' : 'ocean-dome-1080p.mp4';
 const ocean = createOceanScene(video, {
-  videoUrl: new URL('./assets/ocean-dome-4k.mp4', import.meta.url).href,
+  videoUrl: new URL(`./assets/${videoFile}`, import.meta.url).href,
   onReady: () => root.classList.add('scene-ready'),
   onBlocked: () => { manuallyPaused = true; syncMotion(); },
 });
