@@ -113,3 +113,29 @@ test('reports unknown template placeholders instead of publishing them', async (
     await assert.rejects(renderNotes(out, root), /Unknown notes template placeholder/);
   });
 });
+
+test('homepage includes only the five newest articles while the archive keeps every article', async () => {
+  const notes = Array.from({ length: 7 }, (_, index) => ({ ...note, slug: `post-${index}`, date: `2026-10-0${index + 1}` }));
+  notes[6].title = '<新的> & "文章" $&';
+  await fixture(async ({ root, out, content }) => {
+    await Promise.all(notes.map(item => writeFile(join(content, `${item.slug}.md`), '## 正文\n\n这是一篇文章。')));
+    const rendered = await renderNotes(out, root);
+    assert.equal(rendered.count, 7);
+    const homeSlugs = [...rendered.recentArticles.matchAll(/href="\/notes\/([^/]+)\//g)].map(match => match[1]);
+    assert.deepEqual(homeSlugs, ['post-6', 'post-5', 'post-4', 'post-3', 'post-2']);
+    assert.match(rendered.recentArticles, /<h3>&lt;新的&gt; &amp; &quot;文章&quot; \$&amp;<\/h3>/);
+    assert.doesNotMatch(rendered.recentArticles, /<h2>|<新的>/);
+    const list = await readFile(join(out, 'notes', 'index.html'), 'utf8');
+    assert.equal([...list.matchAll(/data-note\b/g)].length, 7);
+    assert.match(list, /<h2>&lt;新的&gt;/);
+  }, notes);
+});
+
+test('an empty blog keeps a readable homepage message', async () => {
+  await fixture(async ({ root, out }) => {
+    const rendered = await renderNotes(out, root);
+    assert.equal(rendered.count, 0);
+    assert.match(rendered.recentArticles, /文章正在路上/);
+    assert.doesNotMatch(rendered.recentArticles, /href=|\{\{/);
+  }, []);
+});

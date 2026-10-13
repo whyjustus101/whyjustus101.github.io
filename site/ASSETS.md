@@ -1,6 +1,5 @@
 # Self-hosted visual assets
 
-Retrieved and verified from 2026-10-11 through 2026-10-13. Production media is served from this repository. The current interface uses installed system fonts and does not request font files. Project illustrations are original HTML, CSS and SVG; no Apple product images, logos or font files are included in the redesign.
 
 ## Ocean photograph
 

@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 
 const remote = 'https://github.com/whyjustus101/whyjustus101.github.io.git';
 const branch = 'gh-pages';
-const archive = '4f8f0932b4b577ab6570b6f4764d66d8c856b690';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const identity = { name: 'whyjustus101', email: '116079361+whyjustus101@users.noreply.github.com' };
 const env = {
@@ -43,12 +42,9 @@ async function publish() {
 
   temporary = await realpath(await mkdtemp(join(tmpdir(), 'whyjustus101-pages-')));
   const checkout = join(temporary, 'checkout');
-  const legacy = join(temporary, 'legacy');
   const output = join(temporary, 'build');
   git(['clone', '--quiet', '--depth', '1', '--single-branch', '--branch', branch, remote, checkout]);
-  git(['fetch', '--quiet', '--depth', '1', 'origin', archive], checkout);
-  git(['worktree', 'add', '--quiet', '--detach', legacy, archive], checkout);
-  console.log(run(process.execPath, [join(repo, 'scripts/build-site.mjs'), '--legacy', legacy, '--out', output]));
+  console.log(run(process.execPath, [join(repo, 'scripts/build-site.mjs'), '--out', output]));
 
   // Only this freshly created temporary checkout is ever cleared.
   if (await realpath(checkout) !== checkout || git(['rev-parse', '--show-toplevel'], checkout) !== checkout || git(['branch', '--show-current'], checkout) !== branch || git(['remote', 'get-url', 'origin'], checkout) !== remote) {
@@ -66,7 +62,7 @@ async function publish() {
     return;
   }
   if (changed) {
-    git(['-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', 'Publish independent ocean site'], checkout);
+    git(['-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', 'Publish ocean blog'], checkout);
     git(['push', 'origin', `HEAD:refs/heads/${branch}`], checkout);
     console.log('Published: https://whyjustus101.github.io/ (Pages may take a moment to update).');
   }

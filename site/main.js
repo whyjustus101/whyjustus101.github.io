@@ -1,5 +1,5 @@
-import { createOceanScene } from './ocean.js?v=20261013-studio';
-import { createParticleField } from './particles.js?v=20261013-studio';
+import { createOceanScene } from './ocean.js?v=20261013-blog';
+import { createParticleField } from './particles.js?v=20261013-blog';
 
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
@@ -53,7 +53,8 @@ function renderScroll() {
   header.classList.toggle('is-scrolled', y > 45);
   ocean.setProgress(progress * 0.16);
   particles.setProgress(progress);
-  const nowBeyond = y >= heroHeight;
+  // Once the opaque header covers the last part of the hero, no film is visible.
+  const nowBeyond = y >= heroHeight - header.offsetHeight;
   if (nowBeyond !== beyondHero) {
     beyondHero = nowBeyond;
     syncMotion();
@@ -97,31 +98,6 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     }
   });
 });
-
-if ('IntersectionObserver' in window) {
-  const reveals = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        reveals.unobserve(entry.target);
-      }
-    });
-  }, { threshold: .08, rootMargin: '0px 0px 10px 0px' });
-  document.querySelectorAll('.reveal').forEach(element => reveals.observe(element));
-  const navigation = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const link = document.querySelector(`[data-nav="${entry.target.id}"]`);
-      link?.classList.toggle('is-active', entry.isIntersecting);
-      if (link?.getAttribute('href').startsWith('#')) {
-        if (entry.isIntersecting) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      }
-    });
-  }, { rootMargin: '-20% 0px -25% 0px' });
-  document.querySelectorAll('#work, #notes').forEach(element => navigation.observe(element));
-} else {
-  document.querySelectorAll('.reveal').forEach(element => element.classList.add('is-visible'));
-}
 
 document.querySelector('#current-year').textContent = String(new Date().getFullYear());
 window.addEventListener('pagehide', () => { ocean.setPaused(true); particles.setPaused(true); });

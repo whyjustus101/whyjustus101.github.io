@@ -96,6 +96,9 @@ async function build() {
   if (legacy) await cp(legacy, out, copyOptions(false));
   await cp(site, out, copyOptions(true));
   const notes = await renderNotes(out, repo);
+  const homeTemplate = await readFile(join(site, 'index.html'), 'utf8');
+  if (homeTemplate.split('{{RECENT_ARTICLES}}').length !== 2) throw new Error('Homepage needs exactly one {{RECENT_ARTICLES}} placeholder.');
+  await writeFile(join(out, 'index.html'), homeTemplate.replace('{{RECENT_ARTICLES}}', () => notes.recentArticles));
   await writeFile(join(out, '.nojekyll'), '');
   console.log(`Built ${out}\nSource: site/ and ${notes.count} note(s)${legacy ? `\nPreserved archive: ${legacy}` : ''}`);
 }

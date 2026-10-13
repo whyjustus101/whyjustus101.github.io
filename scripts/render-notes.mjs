@@ -106,10 +106,10 @@ function fillTemplate(template, values) {
 const dateLabel = date => `${date.slice(0, 4)} / ${date.slice(5, 7)}.${date.slice(8, 10)}`;
 const tagsHtml = tags => tags.map(tag => `<span>${escape(tag)}</span>`).join('');
 
-function noteList(notes) {
+function noteList(notes, heading = 'h2') {
   return notes.map(note => `<a class="note-list-item" href="/notes/${note.slug}/" data-note data-search="${escape([note.title, note.description, ...note.tags].join(' '))}">
   <time class="note-list-date" datetime="${escape(note.date)}">${dateLabel(note.date)}</time>
-  <div class="note-list-content"><div class="note-list-tags">${tagsHtml(note.tags)}</div><h2>${escape(note.title)}</h2><p>${escape(note.description)}</p></div>
+  <div class="note-list-content"><div class="note-list-tags">${tagsHtml(note.tags)}</div><${heading}>${escape(note.title)}</${heading}><p>${escape(note.description)}</p></div>
   <span class="note-list-arrow" aria-hidden="true">→</span>
 </a>`).join('\n');
 }
@@ -151,7 +151,7 @@ export async function renderNotes(out, repo) {
   ]);
   const notes = validateNotes(JSON.parse(metadata));
   const defaults = {
-    TITLE: '笔记', DESCRIPTION: '关于代码、原理与实践的学习笔记。', CANONICAL: `${origin}/notes/`,
+    TITLE: '文章', DESCRIPTION: 'whyjustus101 的博客文章，记录学习、生活与思考。', CANONICAL: `${origin}/notes/`,
     DATE: '', DATE_LABEL: '', TAGS: '', ARTICLE_BODY: '', TOC: '', NOTE_LIST: noteList(notes), NOTE_COUNT: String(notes.length),
   };
   await mkdir(join(out, 'notes'), { recursive: true });
@@ -168,5 +168,8 @@ export async function renderNotes(out, repo) {
     await writeFile(join(out, 'notes', note.slug, 'index.html'), article);
   }
   await updateSitemap(out, notes);
-  return { count: notes.length };
+  return {
+    count: notes.length,
+    recentArticles: notes.length ? noteList(notes.slice(0, 5), 'h3') : '<p class="articles-empty">文章正在路上。</p>',
+  };
 }
