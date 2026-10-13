@@ -17,6 +17,8 @@ export function createParticleField(canvas) {
   let radius = 260;
   let frame = 0;
   let previousTime = 0;
+  let nextFrameTime = 0;
+  const frameInterval = 1000 / 60;
   let elapsed = 0;
   let progress = 0;
   let paused = false;
@@ -51,6 +53,7 @@ export function createParticleField(canvas) {
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
     previousTime = 0;
+    nextFrameTime = 0;
   }
 
   function schedule() {
@@ -124,6 +127,10 @@ export function createParticleField(canvas) {
   function tick(now) {
     frame = 0;
     if (!animated()) return;
+    // Keep high-refresh screens from multiplying physics and canvas work.
+    if (now + 0.5 < nextFrameTime) { schedule(); return; }
+    nextFrameTime = nextFrameTime > 0 && now - nextFrameTime < frameInterval
+      ? nextFrameTime + frameInterval : now + frameInterval;
     const delta = previousTime ? Math.min(0.04, Math.max(0, (now - previousTime) / 1000)) : 1 / 60;
     previousTime = now;
     advance(delta);
