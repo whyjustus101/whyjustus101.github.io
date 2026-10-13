@@ -1,4 +1,4 @@
-import { createOceanScene } from './ocean.js?v=20261013-full-video';
+import { createOceanScene } from './ocean.js?v=20261013-single-shot';
 import { createParticleField } from './particles.js?v=20261012';
 
 const root = document.documentElement;
@@ -12,7 +12,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 root.classList.add('has-js');
 
 const ocean = createOceanScene(video, {
-  videoUrl: new URL('./assets/ocean-full-4k.mp4', import.meta.url).href,
+  videoUrl: new URL('./assets/ocean-dome-4k.mp4', import.meta.url).href,
   onReady: () => root.classList.add('scene-ready'),
   onBlocked: () => { manuallyPaused = true; syncMotion(); },
 });
