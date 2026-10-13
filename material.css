@@ -1,70 +1,21 @@
-@font-face {
-  font-family: "Manrope";
-  src: url("/assets/manrope-latin.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 200 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Bebas Neue";
-  src: url("/assets/bebas-neue.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-/* Shared ocean palette. The hero and reader use the same deep-water surfaces. */
+/* Shared typography, colors and navigation. System fonts keep the first paint light. */
 :root {
   color-scheme: dark;
-  --md-sys-color-primary: #9de2eb;
-  --md-sys-color-on-primary: #062930;
-  --md-sys-color-primary-container: #103d49;
-  --md-sys-color-on-primary-container: #cbf3f7;
-  --md-sys-color-secondary: #b5ced6;
-  --md-sys-color-on-secondary: #092936;
-  --md-sys-color-secondary-container: #153644;
-  --md-sys-color-on-secondary-container: #c9e1e9;
-  --md-sys-color-tertiary: #b7c8e7;
-  --md-sys-color-on-tertiary: #192c48;
-  --md-sys-color-tertiary-container: #1d3653;
-  --md-sys-color-on-tertiary-container: #d3e4ff;
-  --md-sys-color-surface: #041925;
-  --md-sys-color-surface-dim: #02111c;
-  --md-sys-color-surface-bright: #153a4b;
-  --md-sys-color-surface-container-lowest: #041823d9;
-  --md-sys-color-surface-container-low: #082331cc;
-  --md-sys-color-surface-container: #0b2c3ad9;
-  --md-sys-color-surface-container-high: #113545;
-  --md-sys-color-surface-container-highest: #1b4353;
-  --md-sys-color-on-surface: #eaf4f6;
-  --md-sys-color-on-surface-variant: #acbec7;
-  --md-sys-color-outline: #6a919f;
-  --md-sys-color-outline-variant: #93c9d938;
-  --md-sys-color-inverse-surface: #03131e;
-  --md-sys-color-inverse-on-surface: #e6f2f5;
-  --md-sys-color-inverse-primary: #96dcea;
-  --md-sys-color-error: #ffb4ab;
-  --md-sys-color-on-error: #690005;
-  --md-sys-color-error-container: #93000a;
-  --md-sys-color-on-error-container: #ffdad6;
-  --md-sys-shape-corner-small: 4px;
-  --md-sys-shape-corner-medium: 6px;
-  --md-sys-shape-corner-large: 10px;
-  --md-sys-shape-corner-extra-large: 12px;
-  --md-sys-shape-corner-full: 999px;
-  --md-sys-elevation-1: 0 8px 32px #010b1640;
-  --md-sys-elevation-2: 0 12px 48px #010b1670;
-  --md-sys-motion-easing-standard: cubic-bezier(.2, 0, 0, 1);
-  --md-sys-motion-duration-short: 200ms;
-  --md-sys-motion-duration-medium: 350ms;
-  --font-body: "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-display: "Bebas Neue", "Impact", sans-serif;
-  --gutter: clamp(24px, 4.6vw, 88px);
+  --background: #05090e;
+  --ink: #f5f5f7;
+  --muted: #a1a8b2;
+  --accent: #70b7ff;
+  --line: #ffffff16;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-display: var(--font-body);
+  --gutter: clamp(20px, 4vw, 64px);
+  --md-sys-color-on-surface: var(--ink);
+  --md-sys-color-on-surface-variant: var(--muted);
+  --md-sys-color-primary: var(--accent);
 }
-
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 104px; }
-body { margin: 0; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font: 400 16px/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body { margin: 0; color: var(--ink); background: var(--background); font: 400 16px/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
 body, button, a { -webkit-tap-highlight-color: transparent; }
 button, a { touch-action: manipulation; }
 a { color: inherit; text-decoration: none; }
@@ -75,76 +26,32 @@ button:disabled { cursor: default; }
 svg { display: block; }
 [hidden] { display: none !important; }
 main { position: relative; z-index: 1; }
-::selection { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
-:focus-visible { outline: 3px solid var(--md-sys-color-primary); outline-offset: 4px; }
-.skip-link { position: fixed; z-index: 100; top: 12px; left: 12px; display: flex; align-items: center; min-height: 48px; padding: 12px 24px; border-radius: var(--md-sys-shape-corner-full); color: var(--md-sys-color-on-primary); background: var(--md-sys-color-primary); box-shadow: var(--md-sys-elevation-2); transform: translateY(-180%); }
+::selection { color: #fff; background: #1b4d78; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+.skip-link { position: fixed; z-index: 100; top: 12px; left: 20px; display: flex; align-items: center; min-height: 48px; padding: 12px 24px; border-radius: 999px; color: #051426; background: var(--accent); transform: translateY(-160%); }
 .skip-link:focus { transform: translateY(0); }
-
-/* Quiet navigation floats above the sea and the reading surfaces. */
-.site-header {
-  --bar-ink: var(--md-sys-color-on-surface);
-  --bar-accent: var(--md-sys-color-primary);
-  --bar-container: var(--md-sys-color-secondary-container);
-  --bar-on-container: var(--md-sys-color-on-secondary-container);
-  position: fixed;
-  z-index: 30;
-  inset: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  height: 80px;
-  padding: 0 var(--gutter);
-  background: #041925a6;
-  color: var(--bar-ink);
-  transition: background var(--md-sys-motion-duration-medium), color var(--md-sys-motion-duration-short), box-shadow var(--md-sys-motion-duration-short);
-}
-.site-header.is-scrolled { background: #041925c9; box-shadow: 0 1px 0 #9ed8e21f; backdrop-filter: blur(18px); }
-.home-page .site-header:not(.is-scrolled) {
-  --bar-ink: #ecf2f3;
-  --bar-accent: var(--md-sys-color-inverse-primary);
-  --bar-container: transparent;
-  --bar-on-container: #d3f4fa;
-  background: linear-gradient(#02142070, transparent);
-}
-.site-header :focus-visible { outline-color: var(--bar-accent); }
-.wordmark { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; border-radius: var(--md-sys-shape-corner-medium); font-size: 21px; font-weight: 600; line-height: 1.3; letter-spacing: -.6px; white-space: nowrap; }
-.wordmark svg { box-sizing: content-box; width: 30px; height: 24px; padding: 10px 7px; color: var(--bar-accent); }
-.wordmark-dot { color: var(--bar-accent); }
-.main-nav { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.main-nav a { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 24px; border-radius: 4px; font-size: 13px; font-weight: 500; line-height: 1.45; transition: color var(--md-sys-motion-duration-short); }
-.main-nav a span { font-size: 12px; font-weight: 400; }
-.main-nav a:hover { background: color-mix(in srgb, var(--bar-ink) 8%, transparent); }
-.main-nav a:active { background: color-mix(in srgb, var(--bar-ink) 12%, transparent); }
-.main-nav a.is-active { color: var(--bar-accent); }
-.main-nav a.is-active::after { content: ""; position: absolute; bottom: 5px; left: 24px; right: 24px; height: 1px; background: var(--bar-accent); }
-.header-github { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 10px 20px; border: 1px solid #93c9d947; border-radius: 4px; font-size: 13px; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: background var(--md-sys-motion-duration-short); }
-.header-github svg { width: 18px; height: 18px; }
-.header-github:hover { background: color-mix(in srgb, var(--bar-ink) 8%, transparent); }
-.header-github:active { background: color-mix(in srgb, var(--bar-ink) 12%, transparent); }
-
-@media (max-width: 950px) {
-  .site-header { gap: 16px; }
-  .main-nav a { padding-right: 18px; padding-left: 18px; }
-  .main-nav a span { display: none; }
-  .header-github { gap: 8px; padding-right: 16px; padding-left: 16px; }
-}
+.site-header { position: fixed; z-index: 30; inset: 0 0 auto; display: flex; align-items: center; gap: 30px; height: 64px; padding-inline: max(32px, calc((100vw - 1180px) / 2)); border-bottom: 1px solid transparent; background: #05090ecc; color: #f0f1f3; transition: background 250ms, border-color 250ms; }
+.site-header.is-scrolled { border-bottom-color: #ffffff12; background: #080d14eb; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.home-page .site-header:not(.is-scrolled) { background: linear-gradient(#030b1470, #030b1400); }
+.wordmark { display: inline-flex; align-items: center; min-height: 44px; font-size: 19px; font-weight: 600; letter-spacing: -.6px; white-space: nowrap; }
+.main-nav { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+.main-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 2px; color: #d0d5dd; font-size: 12px; transition: color 180ms; }
+.main-nav a:hover, .main-nav a.is-active { color: #fff; }
+.main-nav a[aria-current="page"] { color: var(--accent); }
+.header-github { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 36px; padding: 7px 15px; border: 1px solid #ffffff17; border-radius: 999px; color: #eceff4; background: #ffffff0a; font-size: 12px; white-space: nowrap; transition: background 180ms; }
+.header-github:hover { background: #ffffff16; }
+.header-github svg { width: 13px; height: 13px; }
 @media (max-width: 700px) {
-  :root { --gutter: 24px; }
-  .site-header { height: 72px; gap: 8px; padding-right: 16px; padding-left: 16px; }
-  .wordmark { gap: 8px; font-size: 17px; letter-spacing: -.5px; }
-  .wordmark svg { width: 25px; height: 22px; padding: 8px 5px; border-radius: var(--md-sys-shape-corner-medium); }
-  .main-nav { gap: 2px; }
-  .main-nav a { min-width: 48px; padding: 12px 10px; font-size: 13px; }
-  .main-nav a.is-active::after { left: 10px; right: 10px; }
-  .header-github { width: 48px; padding: 0; border-color: transparent; font-size: 0; gap: 0; }
-  .header-github svg { width: 21px; height: 21px; }
+  .site-header { padding-inline: 20px; gap: 18px; }
+  .wordmark { font-size: 17px; letter-spacing: -.5px; }
+  .main-nav { gap: 18px; }
+  .header-github { min-height: 36px; padding-inline: 12px; font-size: 11px; gap: 5px; }
 }
-@media (max-width: 370px) {
-  :root { --gutter: 20px; }
-  .site-header { gap: 4px; padding-right: 8px; padding-left: 12px; }
-  .wordmark { gap: 6px; font-size: 15px; }
-  .wordmark svg { width: 22px; height: 20px; padding: 7px 4px; }
-  .main-nav a { padding-right: 8px; padding-left: 8px; }
+@media (max-width: 380px) {
+  .site-header { gap: 12px; padding-inline: 16px; }
+  .wordmark { font-size: 15px; }
+  .main-nav { gap: 13px; }
+  .header-github { padding-inline: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

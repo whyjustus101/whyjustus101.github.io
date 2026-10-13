@@ -140,7 +140,7 @@ export function createParticleField(canvas) {
 
   function seedField() {
     // Jittered cells avoid accidental clumps without looking like a dot grid.
-    const count = Math.min(staticMode ? 420 : 1600, Math.max(60, Math.round(width * height / (staticMode ? 4900 : 930))));
+    const count = Math.min(staticMode ? 120 : 600, Math.max(60, Math.round(width * height / (staticMode ? 4900 : 2600))));
     const columns = Math.max(1, Math.min(count, Math.round(Math.sqrt(count * width / height))));
     const rows = Math.max(1, Math.floor(count / columns));
     let seed = 71723;
